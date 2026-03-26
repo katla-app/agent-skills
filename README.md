@@ -13,15 +13,15 @@ Agent skills for [Claude Code](https://claude.ai/code) and other AI coding agent
 
 ```bash
 # Install all skills
-npx skills add baboons/katla-skills
+npx skills add katla-app/agent-skills
 
 # Install a specific skill
-npx skills add baboons/katla-skills --skill katla-sdk
-npx skills add baboons/katla-skills --skill gdpr-ccpa-checker
+npx skills add katla-app/agent-skills --skill katla-sdk
+npx skills add katla-app/agent-skills --skill gdpr-ccpa-checker
 
 # Install globally (available in all projects)
-npx skills add -g baboons/katla-skills
+npx skills add -g katla-app/agent-skills
 
 # List available skills without installing
-npx skills add baboons/katla-skills --list
+npx skills add katla-app/agent-skills --list
 ```
