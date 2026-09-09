@@ -87,6 +87,47 @@ Quick reference for identifying cookies during compliance audits.
 | `_shopify_*` | Shopify | Store functionality |
 | `woocommerce_*` | WooCommerce | Cart and session |
 
+## APAC Regional Trackers
+
+Western cookie scanners routinely miss these. On a site serving Japan, Korea, Greater China or
+Southeast Asia, these are the tags most likely to fire before consent and go unreported.
+
+### Cookies
+
+| Cookie | Service | Region | Purpose |
+|--------|---------|--------|---------|
+| `_lt`, `__lt__cid` | LINE Tag | JP, TH, TW | Ad conversion tracking |
+| `B`, `T`, `XB` (on `yahoo.co.jp`) | Yahoo! JAPAN | JP | Ad targeting and measurement |
+| `ra_uid`, `rat_*` | Rakuten Analytics Tag | JP | Analytics and ad attribution |
+| `NNB`, `nx_ssl` | Naver | KR, regional | Ad targeting |
+| `wcs_bt` | Naver Analytics | KR, regional | Site analytics |
+| `_kau`, `_kahai`, `_karmt` | Kakao | KR, regional | Ad and conversion tracking |
+| `_hmt`, `HMACCOUNT` | Baidu Tongji | CN, regional | Site analytics |
+| `pgv_pvid` | Tencent | CN, regional | Analytics and ad tracking |
+| `cna`, `_tb_token_`, `xman_us_f` | Alibaba / Alimama | CN, SEA | Ad and commerce tracking |
+| `SPC_F`, `SPC_EC`, `SPC_U` | Shopee | SEA | Commerce session and tracking |
+| `lzd_cid`, `t_uid`, `t_fv` | Lazada | SEA | Commerce tracking |
+| `cto_bundle`, `cto_bidid` | Criteo | Heavy use in JP/KR | Retargeting |
+
+### Ad-tech and analytics domains to flag pre-consent
+
+| Domain | Service | Category |
+|--------|---------|----------|
+| `tr.line.me`, `d.line-scdn.net` | LINE Tag | Marketing |
+| `yjtag.yahoo.co.jp`, `b.yjtag.jp`, `s.yimg.jp` | Yahoo! JAPAN | Marketing |
+| `rat.rakuten.co.jp`, `r.r10s.jp` | Rakuten | Marketing/Analytics |
+| `wcs.naver.net`, `nlog.naver.com` | Naver | Analytics/Marketing |
+| `t1.daumcdn.net`, `analytics.kakao.com` | Kakao | Marketing |
+| `hm.baidu.com` | Baidu Tongji | Analytics |
+| `tajs.qq.com`, `pingjs.qq.com` | Tencent | Analytics |
+| `log.mmstat.com` | Alimama | Marketing |
+| `analytics.tiktok.com` | TikTok | Marketing |
+| `*.appsflyer.com`, `app.adjust.com` | AppsFlyer / Adjust | Attribution |
+
+> Cookie names for these platforms are less consistently documented than the Google and Meta
+> equivalents. Treat the table as a starting point for identification, confirm against what the
+> site actually sets, and verify categorisation before putting a name in a compliance report.
+
 ## Red Flags During Audit
 
 Watch for these patterns that indicate potential compliance issues:
@@ -98,3 +139,6 @@ Watch for these patterns that indicate potential compliance issues:
 5. **Cookie syncing** between multiple ad networks
 6. **Undisclosed cookies** not mentioned in the cookie policy
 7. **Cookies with generic names** that obscure their purpose
+8. **Regional ad tags firing pre-consent** (LINE, Yahoo! JAPAN, Naver, Kakao, Shopee, Lazada,
+   Baidu, Tencent) — commonly missed because Western scanners do not recognise them
+9. **Cookie policy that lists only Western trackers** while the page loads regional ones
