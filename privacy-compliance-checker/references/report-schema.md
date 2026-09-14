@@ -1,0 +1,130 @@
+# Branded report — findings schema
+
+The audit produces a `findings.json`; `scripts/render-report.mjs` turns it into a
+branded A4 HTML report. The renderer makes **no compliance judgements of its own** — it
+lays out what you give it and derives only arithmetic (counts, percentages, verdict
+tallies). If a fact is not in the JSON it will not appear in the report.
+
+```bash
+node scripts/render-report.mjs findings.json -o report.html
+```
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `-o`, `--output` | `compliance-report-<domain>.html` | Output path |
+| `--brand` | `assets/brand.json` | Brand tokens — swap to white-label |
+
+## Top level
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `url` | string | yes¹ | Full URL audited |
+| `domain` | string | no | Derived from `url` if absent |
+| `checkedAt` | ISO 8601 string | no | Defaults to now |
+| `preparedFor` | string | no | Defaults to `Data Protection Officer` |
+| `reportId` | string | no | Derived stably from url + date if absent |
+| `status` | `compliant` \| `attention` \| `noncompliant` | no | **Derived if absent — prefer letting it derive** |
+| `scope` | object | recommended | `{ markets: string[], basis: string }` |
+| `consentMechanism` | object | recommended | See below |
+| `cookies` | array | recommended | See below |
+| `thirdParties` | array | no | See below |
+| `jurisdictions` | array | recommended | See below |
+| `findings` | array | recommended | See below |
+| `passed` | string[] | no | Checks that passed, for the appendix |
+| `notVerifiable` | string[] | no | Obligations invisible from the browser |
+
+¹ `url` or `domain` — at least one.
+
+`status` derivation: any critical finding or any `fail` verdict → `noncompliant`; else any
+warning or `review` verdict → `attention`; else `compliant`. Override it only when you have
+a reason the data does not carry.
+
+## `cookies[]`
+
+| Field | Type | Notes |
+|---|---|---|
+| `name` | string | Cookie name |
+| `domain` | string | Setting domain |
+| `category` | string | `functional` `personalization` `analytics` `marketing` `security` `unknown` — `necessary`/`essential`/`unclassified` also accepted |
+| `thirdParty` | boolean | |
+| `preConsent` | boolean | Present before any consent interaction |
+| `purpose` | string | One short line |
+
+`functional`, `security`, `necessary` and `essential` count as **essential**. An essential
+cookie with `preConsent: true` is reported as exempt, not as a violation — so classify
+honestly and the report gets the alarm level right by itself.
+
+## `consentMechanism`
+
+```jsonc
+{
+  "bannerPresent": true,
+  "checks": [                         // first 4 reach page one; order them by importance
+    { "label": "Reject as easy as accept", "value": "Yes", "status": "pass" }
+  ]
+}
+```
+
+`status` is `pass` | `fail` | `warn` | `na` | `info` and drives only the colour.
+
+## `jurisdictions[]`
+
+One row per regime **in scope** — never pad it with regimes you did not audit.
+
+| Field | Notes |
+|---|---|
+| `code` | Short code — `EU`, `US-CA`, `JP`, `TH` … |
+| `law` | Shown in the pill — `GDPR`, `CCPA`, `PDPA`, `APPI` … |
+| `scope` | Territory shown after the requirement — `EU / EEA`, `Thailand` … |
+| `check` | The requirement tested, one line |
+| `verdict` | `pass` \| `review` \| `fail` \| `readiness` \| `na` |
+
+Use `readiness` for obligations not yet in force — India's DPDP in particular. It renders in
+brand purple as **Readiness**, never as a red failure. See the skill's Important Notes.
+
+The first 7 rows appear on page one; the appendix always carries the full table.
+
+## `findings[]`
+
+| Field | Notes |
+|---|---|
+| `severity` | `critical` \| `warning` \| `readiness` |
+| `title` | Short — clipped to 60 chars on the summary card, full in the appendix |
+| `detail` | 1–2 sentences — clipped to 135 chars on the card, full in the appendix |
+| `evidence` | What you observed: a console result, a status code, a selector |
+| `jurisdictions` | Codes this affects, matching `jurisdictions[].code` |
+| `katlaResolves` | `true` a consent platform fixes it, `false` it needs legal or organisational work |
+
+Findings are sorted critical → warning → readiness; the top three reach page one.
+
+`katlaResolves` drives the **Getting compliant** split, which is omitted entirely when
+`status` is `compliant`. Set it deliberately on every finding: marking a policy-drafting or
+DPO-appointment item `true` produces a report that is wrong in the way the skill's
+Remediation Guidance warns about. Omit the field and the finding appears in neither column.
+
+## Layout behaviour
+
+The report is as many A4 sheets as the audit needs.
+
+**Page one** is the fixed summary sheet. When the data overruns it, an inline script nudges it
+— section rhythm from 30px down to 24px, then regulation rows move to the detail sheets with
+the "+ N MORE OVERLEAF" counter updated, and only a pathological page reaches the three-line
+clamp on finding details. It is never crushed to fit.
+
+**Detail sheets** are paginated at load into real A4 pages, each with the running header
+(domain, report id) and footer (brand line, `Page N of M`). A block taller than one sheet is
+split by moving trailing rows onto the next sheet, with `(continued)` appended to its heading —
+so a table or findings list breaks between rows, never through one.
+
+Nothing is ever dropped. Page one sheds content to the detail sheets, and the detail sheets
+carry every finding, every jurisdiction, the full cookie and third-party tables, and the
+remediation split regardless of what page one shows. If the paginator fails for any reason the
+report falls back to a single flowing sheet, which is still complete and readable.
+
+A typical audit is 4–6 pages; a heavy one runs to 9 or more.
+
+## Output
+
+One self-contained HTML file. Open it and print to PDF — A4, margins none, background
+graphics on. Fonts load from Google Fonts, so print while online for exact type; the fallback
+stack keeps the layout intact offline.

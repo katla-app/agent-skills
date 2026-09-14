@@ -11,6 +11,9 @@ description: >-
   "Indonesia PDP Law," "UU PDP," "Singapore PDPA," "Taiwan PDPA," "Malaysia PDPA," "PDPO,"
   "Hong Kong privacy," "Philippines Data Privacy Act," "RA 10173," "DPDP," "India privacy law,"
   "APAC privacy compliance," or asks whether a site is compliant in a specific Asian market.
+  Also produces a branded, printable A4 compliance report — use when the user asks for a
+  "compliance report," "privacy audit report," "GDPR report," "cookie audit PDF," "branded
+  report," or a report to hand to a DPO, client, or legal team.
 ---
 
 # Privacy Compliance Checker — GDPR, CCPA & APAC
@@ -271,9 +274,51 @@ Also check script hostnames against the APAC ad-tech domains listed in
 Tencent tags are the ones that most often fire pre-consent on regional sites and go unnoticed
 because Western scanners do not flag them.
 
+### Step 8: Record the Findings as JSON
+
+Before writing anything up, write the audit out as `findings.json` — one structured record of
+everything observed. Read `references/report-schema.md` for the schema and
+`scripts/example-findings.json` for a filled-in example.
+
+This is worth doing even when the user only wants a chat summary: structuring the findings once
+stops the same facts being re-derived, and it is what drives the branded report.
+
+Two fields carry judgement and deserve care:
+
+- `verdict: "readiness"` for obligations not yet in force, so they never render as red failures
+- `katlaResolves: true | false` on every finding, which drives the remediation split. Read
+  **Remediation Guidance** below before setting it. Marking a policy-drafting or DPO-appointment
+  item `true` produces exactly the misleading report that section warns against.
+
+## Producing the Branded Report
+
+Render the JSON into a branded A4 report:
+
+```bash
+node scripts/render-report.mjs findings.json -o report.html
+```
+
+Then tell the user where it is and that printing to PDF (A4, no margins, background graphics on)
+gives them the shareable document.
+
+Page one is a single-sheet summary for a DPO or client. Behind it, as many A4 detail sheets as
+the audit needs — each with a running header and page number — carrying every finding, the full
+jurisdiction table, the cookie and third-party inventories, the remediation split, and a scope
+and method note. A typical audit runs 4–6 pages.
+
+Report the page count and the headline numbers back to the user rather than restating the whole
+audit in chat — they have the document.
+
+The renderer makes no compliance judgements — it lays out the JSON and derives only counts and
+percentages. It needs no network access and no dependencies beyond Node 18+.
+
+To white-label the report for an agency or a client, copy `assets/brand.json`, change the colors,
+logo, pills and footer, and pass `--brand path/to/brand.json`.
+
 ## Report Format
 
-Generate the compliance report in this format:
+The branded HTML is the deliverable. Use this markdown shape for the **in-chat** summary, and
+keep it shorter than the file — the detail lives in the report:
 
 ```markdown
 # Privacy Compliance Report
