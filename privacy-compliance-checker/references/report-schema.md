@@ -78,11 +78,18 @@ honestly and the report gets the alarm level right by itself.
 
 `status` is `pass` | `fail` | `warn` | `na` | `info` and drives only the colour.
 
-`fix` is optional and means the same thing it means on a finding: where the work lands if this
-check is not passing. Tag every check, passing ones included — the web report lets a reader
-filter the whole page down to the queue they own, and a check that drops out of the filter
-because nobody tagged it looks like a check that does not apply to them. Omit it only when the
-check genuinely has no owner.
+`fix` means the same thing it means on a finding: where the work lands if this check is not
+passing. Tag every check, passing ones included — the web report lets a reader filter the whole
+page down to the queue they own, and a check that drops out of the filter because nobody tagged
+it looks like a check that does not apply to them.
+
+**Only consent-mechanism checks belong here.** This array renders under a heading that reads
+*Consent banner*, so every row in it is a claim about the banner: whether one exists, reject
+parity, granular unticked categories, storage and withdrawal, Consent Mode signals. It is the
+only array that takes a label, a value and a status, which makes it tempting to use for every
+verification in the audit — and a *Consent banner* section listing a policy's last-updated date
+or a controller's postal address tells the reader the audit does not know what it is looking at.
+Anything else that passed goes in `passed[]`; anything wrong goes in `findings[]`.
 
 ## `jurisdictions[]`
 

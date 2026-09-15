@@ -471,9 +471,49 @@ stops the same facts being re-derived, and it is what drives the branded report.
 Two fields carry judgement and deserve care:
 
 - `verdict: "readiness"` for obligations not yet in force, so they never render as red failures
-- `fix: "cmp" | "site" | "legal"` on every finding, which drives the remediation split. Read
-  **Remediation Guidance** below before setting it. Tagging a policy-drafting or DPO-appointment
-  item `cmp` produces exactly the misleading report that section warns against.
+- `fix: "cmp" | "site" | "legal"` on **every finding, every `consentMechanism.checks[]` entry and
+  every `jurisdictions[]` row** — passing ones included. It drives the remediation split and the
+  published report's filter, which narrows all three sections at once. Read **Remediation
+  Guidance** below before setting it. Tagging a policy-drafting or DPO-appointment item `cmp`
+  produces exactly the misleading report that section warns against.
+
+An untagged row is not a neutral omission. The web report lets a reader narrow the page to the
+queue they own, and a row with no tag can never match: to the platform engineer filtering on
+`cmp` it reads as "this is not mine" rather than "nobody said". Three fields, one vocabulary, no
+blanks.
+
+```jsonc
+"consentMechanism": { "checks": [{ "label": "Reject as easy as accept", "value": "Yes",
+                                   "status": "pass", "fix": "cmp" }] },
+"jurisdictions":    [{ "law": "GDPR", "code": "EU", "scope": "EU / EEA",
+                       "check": "Prior consent", "verdict": "fail", "fix": "cmp" }],
+"findings":         [{ "title": "…", "severity": "critical", "fix": "site",
+                       "katlaResolves": false }]
+```
+
+### What belongs in `consentMechanism.checks[]`
+
+**The consent mechanism, and nothing else.** It renders under a heading that says *Consent
+banner*, so every row in it is a claim about the banner: whether one exists, whether reject is as
+easy as accept, whether categories are granular and unticked, whether the choice is stored,
+withdrawable and honoured, whether Consent Mode signals fire.
+
+It is the only array that takes a label, a measured value and a status, which makes it tempting
+to use for every verification you ran. Do not. A *Consent banner* section listing the cookie
+policy's last-updated date and the controller's postal address tells the reader the audit does
+not know what it is looking at.
+
+Everything else lands where it belongs:
+
+| What you verified | Where it goes |
+|---|---|
+| A consent-mechanism behaviour | `consentMechanism.checks[]` |
+| Something wrong, anywhere | `findings[]` |
+| Something else you checked and it was fine | `passed[]` |
+| An obligation the browser cannot see | `notVerifiable[]` |
+
+Policy wording, retention periods, controller identity, cookie lifetimes and disclosure accuracy
+are **not** consent-mechanism checks, however they turned out.
 
 `fix` replaces the older `katlaResolves` boolean. Set `fix` on every finding, and **also** set
 `katlaResolves` (`cmp` → `true`, `site` and `legal` → `false`) until every renderer that reads
