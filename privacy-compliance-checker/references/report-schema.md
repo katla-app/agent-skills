@@ -46,6 +46,13 @@ node scripts/render-report.mjs findings.json -o report.html
 4. Only future obligations assessed → `readiness`, displayed as **Readiness assessment**.
 5. Otherwise → `compliant`, displayed as **No issues found in tested scope**.
 
+The user-facing grade ladder is: **Critical / Failure** → **Needs attention** → **Review
+(Needs verification)** → **Readiness** → **Pass**. `N/A` is separate and means the requirement
+does not apply. A `review` or `untested` row makes the assessment incomplete until resolved; it
+is not a confirmed failure or warning. The derived status precedence above is authoritative when
+a report contains more than one outcome; optional improvements and `notVerifiable[]` do not
+affect it.
+
 Completion requires `assessment.complete: true`, some recorded current check results or readiness
 results, no `needsVerification` entries, no jurisdiction `review`/`partial`/`untested`, and no
 consent `review`/`untested`. An empty report cannot pass. Legacy reports without explicit coverage

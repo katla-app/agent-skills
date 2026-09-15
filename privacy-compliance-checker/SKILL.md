@@ -46,6 +46,25 @@ For each potential issue:
 | Verified future obligation, with commencement date | Finding/jurisdiction `readiness` | Readiness only, no current failure |
 | Organisational obligation outside the browser scope | `notVerifiable[]` | Scope limitation, no automatic failure |
 
+### Grade ladder
+
+Use these labels in descending order of severity. The first two are confirmed problem grades;
+the middle states describe coverage or timing and are not failures; `Pass` is the clean result.
+
+| Order | Grade | Use it when | Overall report label |
+|---:|---|---|---|
+| 1 | **Critical / Failure** | A material, applicable obligation is confirmed to fail, such as consent being bypassed, prohibited sale/sharing, or materially undisclosed processing | **Confirmed issues in tested scope** (`noncompliant`) |
+| 2 | **Needs attention** | A smaller but confirmed applicable gap exists and has a concrete fix | **Needs attention** (`attention`) |
+| 3 | **Review** | Evidence, applicability or an agreed check is unresolved; do not call it a failure or pass. Use `review`/`untested` for the row and `needsVerification[]` for the explanation | **Incomplete assessment** (`incomplete`) |
+| 4 | **Readiness** | A future obligation is recorded before its commencement date | **Readiness assessment** (`readiness`) |
+| 5 | **Pass** | The applicable check was completed and no issue was found | **No issues found in tested scope** (`compliant`) |
+
+`N/A` is separate from the ladder: use it when a requirement does not apply. `Review` is also
+called **Needs verification** in the detailed evidence and means the audit cannot yet support a
+pass or failure. Optional
+improvements and `notVerifiable` items do not change the grade. If multiple grades exist, the
+overall report follows this precedence: Failure → Incomplete → Needs attention → Readiness → Pass.
+
 Do not predict whether a regulator would prosecute. Do not move unresolved checks into
 `passed[]`, demand a particular number of findings, or soften confirmed violations for a tidy
 report. Group multiple cookies or jurisdictions under one root-cause finding where the fix is
