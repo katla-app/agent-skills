@@ -115,13 +115,13 @@ Read `references/gdpr-checklist.md` for the full GDPR checklist.
 
 Each item you verify here becomes one `consentMechanism.checks[]` row, and **every row carries a
 `fix` tag** — `cmp` for nearly all of them, since these are the banner's own behaviour. Tag them
-as you record them rather than going back at Step 8; the publish script refuses a document with
-untagged rows, and the reason is in Step 8.
+as you record them rather than going back at Step 8b; the publish script refuses a document with
+untagged rows, and the reason is in Step 8b.
 
 If a cookie banner is present, verify:
 
 - [ ] Banner appears before any non-essential cookies are set
-- [ ] "Reject All" option is available and equally prominent as "Accept All" (DMA requirement)
+- [ ] "Reject All" is on the first layer, one click deep, and not visually degraded next to "Accept All" (see the checklist — a colour difference alone is not a finding)
 - [ ] Granular category choices are available (not just accept/reject)
 - [ ] Functional cookies are clearly labeled as always-on
 - [ ] No pre-checked boxes for non-essential categories
@@ -363,6 +363,11 @@ the notice, consent, rights and breach tranche lands around May 2027. Report Ind
 
 ### Step 6: Privacy Policy Check
 
+These boxes test whether the required information is **present and accurate**, not whether it is
+phrased the way you would phrase it. An unticked box is a finding; wording you would improve is
+not. Step 8 has the tests — apply them here, because this checklist is the easiest place in the
+audit to generate a page of findings nobody will act on.
+
 Navigate to the privacy policy page:
 
 1. Look for privacy policy link in footer, cookie banner, or navigation
@@ -464,9 +469,56 @@ Also check script hostnames against the APAC ad-tech domains listed in
 Tencent tags are the ones that most often fire pre-consent on regional sites and go unnoticed
 because Western scanners do not flag them.
 
-### Step 8: Record the Findings as JSON
+### Step 8: Decide What Is Actually A Finding
 
-Before writing anything up, write the audit out as `findings.json` — one structured record of
+Before the JSON, decide what earns a row in `findings[]`. An audit that lists everything it
+noticed is not more rigorous than one that lists what matters — it is less useful, because the
+reader cannot tell the blocking problem from the wording preference, and the padding makes them
+doubt the rest. **A finding is something the site should change.** If you would not defend it to
+an annoyed engineer who has to fix it, leave it out.
+
+Apply these four tests before writing a finding:
+
+1. **Would a supervisory authority act on it?** Not "could it theoretically be framed as an
+   Article breach" — regulators act on tracking without consent, consent that cannot be refused
+   or withdrawn, and undisclosed processing. They do not act on a policy that says "anonymous"
+   where "pseudonymous" is stricter, or a sentence a lawyer would phrase differently.
+2. **Is there something concrete to change?** A finding names a cookie, a selector, a header, a
+   missing disclosure. "The tone of this section could be clearer" is not a finding.
+3. **Did you measure it, or infer it from wording?** Behaviour you observed outranks text you
+   read. A policy that describes the site's actual behaviour accurately but imprecisely is at
+   most a passing remark in `passed[]` — not a warning.
+4. **Is the effect on the visitor real?** If nothing about what the visitor experiences or what
+   data leaves their browser would change after the fix, it is not worth a row.
+
+**Specifically do not raise findings for:**
+
+- Imprecise but non-misleading policy wording — "anonymous" for pseudonymous analytics IDs,
+  "we may share" for "we share", loose use of "data" versus "personal data". Where the described
+  behaviour is accurate and the practice is sound, the word choice is a drafting preference.
+  (The one exception is wording that would actually mislead a visitor into a different decision —
+  a policy claiming no tracking while trackers fire is a real finding, and a critical one.)
+- Styling differences that do not degrade a choice — colour, fill, border radius, shade of grey —
+  when size, position, font and click-depth are equal
+- Boilerplate that is standard across the industry and legally unremarkable
+- Missing best-practice extras that no in-scope regulation requires
+- Anything you are reporting mainly because a checklist line exists for it
+
+**Calibrate severity honestly.** `critical` means tracking without a valid legal basis, consent
+that cannot be refused or withdrawn, or processing the visitor was never told about. `warning`
+means a real gap with a concrete fix that is not, by itself, an enforcement risk. If everything
+comes out `warning`, the severity field has stopped carrying information — look again at whether
+some of those rows belong in `passed[]` instead.
+
+**A clean site should produce a clean report.** Three solid findings and a long `passed[]` is a
+better audit than eleven warnings. Resist the pull to justify the exercise by finding something;
+"no critical findings, three minor items" is a complete and valuable result. Be equally careful
+in the other direction — dropping a real violation to keep a report tidy is the worse error, and
+the tests above are about *materiality*, never about sparing the site owner bad news.
+
+### Step 8b: Record the Findings as JSON
+
+Now write the audit out as `findings.json` — one structured record of
 everything observed. Read `references/report-schema.md` for the schema and
 `scripts/example-findings.json` for a filled-in example.
 

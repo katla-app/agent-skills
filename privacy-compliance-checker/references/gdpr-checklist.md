@@ -6,7 +6,7 @@
 
 - [ ] **Consent before cookies**: No non-essential cookies are set before the user gives consent
 - [ ] **Clear affirmative action**: Consent requires a clear positive action (clicking "Accept")
-- [ ] **Reject option equally prominent**: "Reject All" must be same size, color prominence, and position as "Accept All" (DMA requirement in EU)
+- [ ] **Reject reachable at the same cost as accept**: "Reject All" is on the first layer, one click deep, and matches "Accept All" in size, font and row position. A *colour* difference — filled accept, outlined reject — is **not** a finding on its own: the EDPB Cookie Banner Taskforce declined to treat colour differentiation as a violation per se. Measure the reject label's own contrast before judging; an outlined button on white often beats a filled one. Report it only when the reject option is genuinely degraded — smaller, greyed into the background, below the fold, or an extra click away
 - [ ] **Granular choices**: Users can select individual cookie categories (analytics, marketing, personalization, etc.)
 - [ ] **No pre-ticked boxes**: Non-essential cookie categories are unchecked by default
 - [ ] **No cookie wall**: Access to the site is not contingent on accepting cookies (unless strictly necessary)
@@ -84,6 +84,6 @@
 
 ## DMA (Digital Markets Act) Additional Requirements
 
-- [ ] **Visual equality**: Reject button is visually identical to Accept button in size, color, and prominence
+- [ ] **Visual parity**: Reject button matches Accept in size, font and position and is not visually degraded. Identical colour is **not** required — grade the reject option on whether it is as easy to find and click, not on whether it is styled the same
 - [ ] **Temporal restriction**: After rejection, consent cannot be re-requested for at least 1 year
 - [ ] **No forced consent**: Gatekeeper platforms cannot require consent for cross-service data combination
