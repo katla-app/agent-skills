@@ -49,6 +49,17 @@ a reason the data does not carry.
 | `thirdParty` | boolean | |
 | `preConsent` | boolean | Present before any consent interaction |
 | `purpose` | string | One short line |
+| `lifetime` | string | Human-readable, e.g. `90 days`, `session`, `400 days` — from the jar's `expires` |
+| `httpOnly` | boolean | From the jar. `document.cookie` cannot see HttpOnly cookies at all |
+| `secure` | boolean | From the jar. A tracking cookie without this is a finding |
+| `sameSite` | string | From the jar, when set |
+| `declared` | boolean | Whether the site's own CMP declaration or cookie policy lists this cookie |
+
+`lifetime`, `httpOnly`/`secure` and `declared` each add a column to the appendix cookie table, and
+only when at least one cookie carries them — so an audit that could not read the jar renders the
+original five-column layout rather than a table full of blanks. Populate them whenever the jar was
+readable; a `declared: false` row is what turns "the declaration is incomplete" from an assertion
+into something the reader can check.
 
 `functional`, `security`, `necessary` and `essential` count as **essential**. An essential
 cookie with `preConsent: true` is reported as exempt, not as a violation — so classify
@@ -128,3 +139,8 @@ A typical audit is 4–6 pages; a heavy one runs to 9 or more.
 One self-contained HTML file. Open it and print to PDF — A4, margins none, background
 graphics on. Fonts load from Google Fonts, so print while online for exact type; the fallback
 stack keeps the layout intact offline.
+
+Adding `--artifact` emits the same report as publishable Artifact content — no
+doctype/html/head/body wrapper, a domain-led `<title>`, and per-sheet scaling so it reads on a
+phone. Publish that file with the Artifact tool to hand the user a link instead of a file. Render
+both from the same `findings.json` so the link and the PDF cannot disagree.
