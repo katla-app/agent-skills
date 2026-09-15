@@ -3,62 +3,236 @@
   "checkedAt": "2026-09-14T09:12:00+02:00",
   "preparedFor": "Data Protection Officer",
   "scope": {
-    "markets": ["EU/EEA", "California", "Japan", "Thailand", "Singapore", "India"],
+    "markets": [
+      "EU/EEA",
+      "California",
+      "Japan",
+      "Thailand",
+      "Singapore",
+      "India"
+    ],
     "basis": "user-stated"
   },
-
   "consentMechanism": {
     "bannerPresent": true,
     "checks": [
-      { "label": "Banner before non-essential cookies", "value": "No", "status": "fail" },
-      { "label": "Reject as easy as accept", "value": "Yes", "status": "pass" },
-      { "label": "Granular categories offered", "value": "Yes", "status": "pass" },
-      { "label": "No pre-ticked categories", "value": "Yes", "status": "pass" },
-      { "label": "GPC signal honoured", "value": "No", "status": "fail" }
+      {
+        "label": "Banner before non-essential cookies",
+        "value": "No",
+        "status": "fail"
+      },
+      {
+        "label": "Reject as easy as accept",
+        "value": "Yes",
+        "status": "pass"
+      },
+      {
+        "label": "Granular categories offered",
+        "value": "Yes",
+        "status": "pass"
+      },
+      {
+        "label": "No pre-ticked categories",
+        "value": "Yes",
+        "status": "pass"
+      },
+      {
+        "label": "GPC signal honoured",
+        "value": "No",
+        "status": "fail"
+      }
     ]
   },
-
   "cookies": [
-    { "name": "PHPSESSID", "domain": "shop.example.com", "category": "functional", "purpose": "Server session", "preConsent": true },
-    { "name": "XSRF-TOKEN", "domain": "shop.example.com", "category": "security", "purpose": "CSRF protection", "preConsent": true },
-    { "name": "cart_id", "domain": "shop.example.com", "category": "functional", "purpose": "Basket contents", "preConsent": true },
-    { "name": "_ga", "domain": ".example.com", "category": "analytics", "thirdParty": true, "purpose": "Google Analytics visitor id", "preConsent": true },
-    { "name": "_ga_R7X2", "domain": ".example.com", "category": "analytics", "thirdParty": true, "purpose": "GA4 session state", "preConsent": true },
-    { "name": "_gid", "domain": ".example.com", "category": "analytics", "thirdParty": true, "purpose": "Google Analytics session id", "preConsent": false },
-    { "name": "_fbp", "domain": ".example.com", "category": "marketing", "thirdParty": true, "purpose": "Meta Pixel browser id", "preConsent": true },
-    { "name": "_gcl_au", "domain": ".example.com", "category": "marketing", "thirdParty": true, "purpose": "Google Ads conversion linker", "preConsent": false },
-    { "name": "__lt__cid", "domain": ".example.com", "category": "marketing", "thirdParty": true, "purpose": "LINE Tag cross-domain id", "preConsent": true },
-    { "name": "intercom-id", "domain": ".example.com", "category": "personalization", "thirdParty": true, "purpose": "Intercom visitor id", "preConsent": false },
-    { "name": "_hjSession", "domain": ".example.com", "category": "analytics", "thirdParty": true, "purpose": "Hotjar session recording", "preConsent": false },
-    { "name": "ajs_anonymous_id", "domain": ".example.com", "category": "unknown", "thirdParty": true, "purpose": "Unidentified — no vendor match", "preConsent": false }
+    {
+      "name": "PHPSESSID",
+      "domain": "shop.example.com",
+      "category": "functional",
+      "purpose": "Server session",
+      "preConsent": true
+    },
+    {
+      "name": "XSRF-TOKEN",
+      "domain": "shop.example.com",
+      "category": "security",
+      "purpose": "CSRF protection",
+      "preConsent": true
+    },
+    {
+      "name": "cart_id",
+      "domain": "shop.example.com",
+      "category": "functional",
+      "purpose": "Basket contents",
+      "preConsent": true
+    },
+    {
+      "name": "_ga",
+      "domain": ".example.com",
+      "category": "analytics",
+      "thirdParty": true,
+      "purpose": "Google Analytics visitor id",
+      "preConsent": true
+    },
+    {
+      "name": "_ga_R7X2",
+      "domain": ".example.com",
+      "category": "analytics",
+      "thirdParty": true,
+      "purpose": "GA4 session state",
+      "preConsent": true
+    },
+    {
+      "name": "_gid",
+      "domain": ".example.com",
+      "category": "analytics",
+      "thirdParty": true,
+      "purpose": "Google Analytics session id",
+      "preConsent": false
+    },
+    {
+      "name": "_fbp",
+      "domain": ".example.com",
+      "category": "marketing",
+      "thirdParty": true,
+      "purpose": "Meta Pixel browser id",
+      "preConsent": true
+    },
+    {
+      "name": "_gcl_au",
+      "domain": ".example.com",
+      "category": "marketing",
+      "thirdParty": true,
+      "purpose": "Google Ads conversion linker",
+      "preConsent": false
+    },
+    {
+      "name": "__lt__cid",
+      "domain": ".example.com",
+      "category": "marketing",
+      "thirdParty": true,
+      "purpose": "LINE Tag cross-domain id",
+      "preConsent": true
+    },
+    {
+      "name": "intercom-id",
+      "domain": ".example.com",
+      "category": "personalization",
+      "thirdParty": true,
+      "purpose": "Intercom visitor id",
+      "preConsent": false
+    },
+    {
+      "name": "_hjSession",
+      "domain": ".example.com",
+      "category": "analytics",
+      "thirdParty": true,
+      "purpose": "Hotjar session recording",
+      "preConsent": false
+    },
+    {
+      "name": "ajs_anonymous_id",
+      "domain": ".example.com",
+      "category": "unknown",
+      "thirdParty": true,
+      "purpose": "Unidentified — no vendor match",
+      "preConsent": false
+    }
   ],
-
   "thirdParties": [
-    { "host": "www.googletagmanager.com", "type": "Tag manager", "preConsent": true },
-    { "host": "connect.facebook.net", "type": "Marketing", "preConsent": true },
-    { "host": "tags.line.me", "type": "Marketing", "preConsent": true },
-    { "host": "static.hotjar.com", "type": "Analytics", "preConsent": false },
-    { "host": "widget.intercom.io", "type": "Personalization", "preConsent": false },
-    { "host": "cdn.segment.com", "type": "Analytics", "preConsent": false }
+    {
+      "host": "www.googletagmanager.com",
+      "type": "Tag manager",
+      "preConsent": true
+    },
+    {
+      "host": "connect.facebook.net",
+      "type": "Marketing",
+      "preConsent": true
+    },
+    {
+      "host": "tags.line.me",
+      "type": "Marketing",
+      "preConsent": true
+    },
+    {
+      "host": "static.hotjar.com",
+      "type": "Analytics",
+      "preConsent": false
+    },
+    {
+      "host": "widget.intercom.io",
+      "type": "Personalization",
+      "preConsent": false
+    },
+    {
+      "host": "cdn.segment.com",
+      "type": "Analytics",
+      "preConsent": false
+    }
   ],
-
   "jurisdictions": [
-    { "code": "EU", "law": "GDPR", "scope": "EU / EEA", "check": "Prior consent, granular categories, withdrawal as easy as consent", "verdict": "fail" },
-    { "code": "US-CA", "law": "CCPA", "scope": "California", "check": "\"Do Not Sell or Share\" link shown, GPC signal honoured", "verdict": "fail" },
-    { "code": "EU", "law": "DMA", "scope": "Gatekeepers", "check": "Reject visually equal to accept before Google tags fire", "verdict": "pass" },
-    { "code": "JP", "law": "APPI", "scope": "Japan", "check": "Third-party transfer disclosure names recipient and destination", "verdict": "review" },
-    { "code": "TH", "law": "PDPA", "scope": "Thailand", "check": "Purpose notice before collection, local representative named", "verdict": "fail" },
-    { "code": "SG", "law": "PDPA", "scope": "Singapore", "check": "Notice content and published DPO contact", "verdict": "pass" },
-    { "code": "IN", "law": "DPDP", "scope": "India", "check": "Itemised purposes, withdrawal, notice languages", "verdict": "readiness" }
+    {
+      "code": "EU",
+      "law": "GDPR",
+      "scope": "EU / EEA",
+      "check": "Prior consent, granular categories, withdrawal as easy as consent",
+      "verdict": "fail"
+    },
+    {
+      "code": "US-CA",
+      "law": "CCPA",
+      "scope": "California",
+      "check": "\"Do Not Sell or Share\" link shown, GPC signal honoured",
+      "verdict": "fail"
+    },
+    {
+      "code": "EU",
+      "law": "DMA",
+      "scope": "Gatekeepers",
+      "check": "Reject visually equal to accept before Google tags fire",
+      "verdict": "pass"
+    },
+    {
+      "code": "JP",
+      "law": "APPI",
+      "scope": "Japan",
+      "check": "Third-party transfer disclosure names recipient and destination",
+      "verdict": "review"
+    },
+    {
+      "code": "TH",
+      "law": "PDPA",
+      "scope": "Thailand",
+      "check": "Purpose notice before collection, local representative named",
+      "verdict": "fail"
+    },
+    {
+      "code": "SG",
+      "law": "PDPA",
+      "scope": "Singapore",
+      "check": "Notice content and published DPO contact",
+      "verdict": "pass"
+    },
+    {
+      "code": "IN",
+      "law": "DPDP",
+      "scope": "India",
+      "check": "Itemised purposes, withdrawal, notice languages",
+      "verdict": "readiness"
+    }
   ],
-
   "findings": [
     {
       "severity": "critical",
       "title": "Analytics and marketing cookies set before consent",
       "detail": "_ga, _ga_R7X2, _fbp and __lt__cid are written on first paint, before the banner is shown. GTM, Meta Pixel and LINE Tag all load unguarded.",
       "evidence": "document.cookie at DOMContentLoaded, pre-interaction",
-      "jurisdictions": ["EU", "TH", "IN"],
+      "jurisdictions": [
+        "EU",
+        "TH",
+        "IN"
+      ],
+      "fix": "cmp",
       "katlaResolves": true
     },
     {
@@ -66,60 +240,84 @@
       "title": "GPC signal ignored",
       "detail": "navigator.globalPrivacyControl is true on load and marketing tags still fire. No .well-known/gpc.json is served.",
       "evidence": "GET /.well-known/gpc.json → 404",
-      "jurisdictions": ["US-CA"],
+      "jurisdictions": [
+        "US-CA"
+      ],
+      "fix": "cmp",
       "katlaResolves": true
     },
     {
       "severity": "critical",
       "title": "No \"Do Not Sell or Share\" link",
       "detail": "Footer carries a privacy policy link only. CCPA requires a clear and conspicuous opt-out link on the homepage.",
-      "jurisdictions": ["US-CA"],
+      "jurisdictions": [
+        "US-CA"
+      ],
+      "fix": "cmp",
       "katlaResolves": true
     },
     {
       "severity": "warning",
       "title": "One cookie unclassified",
       "detail": "ajs_anonymous_id is set by Segment but is absent from the cookie table in the privacy policy.",
-      "jurisdictions": ["EU", "SG"],
+      "jurisdictions": [
+        "EU",
+        "SG"
+      ],
+      "fix": "cmp",
       "katlaResolves": true
     },
     {
       "severity": "warning",
       "title": "Thai notice falls back to English",
       "detail": "The th-TH language switcher resolves, but /privacy returns the English policy. Thailand requires the notice in a language the data subject understands.",
-      "jurisdictions": ["TH"],
+      "jurisdictions": [
+        "TH"
+      ],
+      "fix": "site",
       "katlaResolves": false
     },
     {
       "severity": "warning",
       "title": "No local representative named for Thailand",
       "detail": "PDPA s.37(5) requires an appointed representative in Thailand for foreign controllers offering goods to Thai data subjects.",
-      "jurisdictions": ["TH"],
+      "jurisdictions": [
+        "TH"
+      ],
+      "fix": "legal",
       "katlaResolves": false
     },
     {
       "severity": "warning",
       "title": "Cross-border transfer wording is generic",
       "detail": "The policy says data \"may be transferred outside your country\". APPI requires naming the destination country, its regime, and the recipient's safeguards.",
-      "jurisdictions": ["JP"],
+      "jurisdictions": [
+        "JP"
+      ],
+      "fix": "legal",
       "katlaResolves": false
     },
     {
       "severity": "readiness",
       "title": "DPDP itemised purposes not yet present",
       "detail": "Marketing is offered as one category. India will require a per-purpose itemised notice with a withdrawal route. Substantive obligations land around May 2027.",
-      "jurisdictions": ["IN"],
+      "jurisdictions": [
+        "IN"
+      ],
+      "fix": "legal",
       "katlaResolves": false
     },
     {
       "severity": "readiness",
       "title": "DPDP notice language menu",
       "detail": "Notice is English-only. From ~May 2027 it must be offered in English plus any of the 22 Eighth Schedule languages on request.",
-      "jurisdictions": ["IN"],
+      "jurisdictions": [
+        "IN"
+      ],
+      "fix": "legal",
       "katlaResolves": false
     }
   ],
-
   "passed": [
     "Reject All is present and visually equal to Accept All",
     "Granular category choices offered, none pre-ticked",
@@ -130,7 +328,6 @@
     "Singapore DPO contact published with an email address",
     "Policy updated within the last 12 months"
   ],
-
   "notVerifiable": [
     "Records of processing activities (Art. 30 GDPR)",
     "Data protection impact assessment for the advertising stack",

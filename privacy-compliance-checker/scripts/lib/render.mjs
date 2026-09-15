@@ -38,6 +38,28 @@ const pct = (n, total) => (total > 0 ? `${Math.round((n / total) * 100)}%` : '0%
 const titleCase = (s) =>
   String(s || '').replace(/(^|[\s-])([a-z])/g, (_, p, c) => p + c.toUpperCase());
 
+const FIX_OWNERS = ['cmp', 'site', 'legal'];
+
+/**
+ * Who applies the fix for one finding: the consent platform, the site's own code,
+ * or a lawyer.
+ *
+ * `fix` is the field to set. `katlaResolves` is the superseded boolean and is read
+ * only as a fallback, so documents published before the split still render: `true`
+ * meant "a consent platform fixes this" and maps to `cmp`; `false` was described in
+ * the report as needing legal drafting or organisational action, so it maps to
+ * `legal` rather than `site` — that preserves what those reports actually said.
+ *
+ * Returns null when a finding carries neither, which keeps it out of the remediation
+ * split entirely rather than guessing an owner for it.
+ */
+const fixOwner = (f) => {
+  if (FIX_OWNERS.includes(f.fix)) return f.fix;
+  if (f.katlaResolves === true) return 'cmp';
+  if (f.katlaResolves === false) return 'legal';
+  return null;
+};
+
 /* Page one is a summary sheet; the appendix carries every finding in full, so
    clipping a long detail here loses nothing. */
 const clip = (s, max) => {
@@ -452,12 +474,16 @@ export function renderReport(audit, brand, options = {}) {
     );
   }
 
-  const fixable = findings.filter((f) => f.katlaResolves === true);
-  const notFixable = findings.filter((f) => f.katlaResolves === false);
+  const byFix = { cmp: [], site: [], legal: [] };
+  for (const f of findings) {
+    const owner = fixOwner(f);
+    if (owner) byFix[owner].push(f);
+  }
+  const anyOwned = byFix.cmp.length || byFix.site.length || byFix.legal.length;
 
   /* The remediation split only appears when there is something to remediate —
      a passing site does not get a product pitch appended to its report. */
-  if (status !== 'compliant' && (fixable.length || notFixable.length)) {
+  if (status !== 'compliant' && anyOwned) {
     const list = (items, empty) =>
       items.length
         ? `<ul style="margin:6px 0 0;padding-left:16px;font-size:8.5pt;color:${C.text};line-height:1.6;">${items
@@ -465,28 +491,35 @@ export function renderReport(audit, brand, options = {}) {
             .join('')}</ul>`
         : `<div style="font-size:8.5pt;color:${C.caption};margin-top:6px;">${esc(empty)}</div>`;
 
+    const group = (heading, items, empty, note) => `<div style="break-inside:avoid;">
+            <div style="font-weight:600;font-size:9pt;margin-bottom:2px;">${esc(heading)}</div>
+            ${list(items, empty)}
+            ${items.length && note ? `<div style="font-size:8.5pt;color:${C.muted};margin-top:10px;line-height:1.6;">${note}</div>` : ''}
+          </div>`;
+
     appendixSections.push(
       appendixBlock(
         'Getting compliant',
-        `<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
-          <div>
-            <div style="font-weight:600;font-size:9pt;margin-bottom:2px;">Fixable with a consent platform</div>
-            ${list(fixable, 'Nothing in this audit falls to a consent platform.')}
-            ${
-              fixable.length
-                ? `<div style="font-size:8.5pt;color:${C.muted};margin-top:10px;line-height:1.6;">${esc(brand.remediation.blurb)} <a href="${esc(brand.remediation.productUrl)}" style="color:${C.brand};text-decoration:none;font-weight:600;">${esc(brand.remediation.productName)}</a> covers this class of issue.</div>`
-                : ''
-            }
-          </div>
-          <div>
-            <div style="font-weight:600;font-size:9pt;margin-bottom:2px;">Needs separate work</div>
-            ${list(notFixable, 'No findings outside the consent layer.')}
-            ${
-              notFixable.length
-                ? `<div style="font-size:8.5pt;color:${C.muted};margin-top:10px;line-height:1.6;">These need legal drafting or organisational action. No consent tool resolves them.</div>`
-                : ''
-            }
-          </div>
+        `<div style="font-size:8.5pt;color:${C.muted};line-height:1.6;margin-bottom:12px;">Grouped by who applies the fix, so each finding reaches the right place.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 40px;">
+          ${group(
+            'Consent platform',
+            byFix.cmp,
+            'Nothing in this audit falls to the consent platform.',
+            `${esc(brand.remediation.blurb)} <a href="${esc(brand.remediation.productUrl)}" style="color:${C.brand};text-decoration:none;font-weight:600;">${esc(brand.remediation.productName)}</a> covers this class of issue — some of it configuration, some of it a platform change.`
+          )}
+          ${group(
+            'Your site',
+            byFix.site,
+            'No findings in the site’s own code or configuration.',
+            'These live in the site’s own code, content or server configuration, outside whatever the consent layer controls.'
+          )}
+          ${group(
+            'Legal and organisational',
+            byFix.legal,
+            'No drafting or organisational work arising from this audit.',
+            'These need legal drafting or an organisational decision. No consent tool resolves them.'
+          )}
         </div>`
       )
     );
