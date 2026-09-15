@@ -183,9 +183,13 @@ that returned null. Three specific traps:
    `getComputedStyle` instead. This one has produced a wrong finding in practice.
 2. **The launcher is often not the CMP's documented selector.** Sites restyle it, wrap it, or
    trigger the CMP from their own button.
-3. **It may render late**, after consent resolves — so a check that runs on load sees nothing.
+3. **It usually does not exist until consent has been decided.** This is the one that bites.
+   Most launchers are the *withdrawal* control, so they render only once there is something to
+   withdraw — a sweep on first load correctly returns nothing, and reporting that as "no
+   persistent control" is wrong. **Always decide consent first, then sweep, then sweep again on
+   a second page.** A finding written before a consent decision was made is not evidence.
 
-Sweep for the shape rather than the selector, after a real wait:
+Sweep for the shape rather than the selector, after a consent decision and a real wait:
 
 ```javascript
 (() => {
@@ -218,8 +222,15 @@ Sweep for the shape rather than the selector, after a real wait:
 })()
 ```
 
-**Then click it.** A control that exists but does not reopen the preference centre is not a
-withdrawal mechanism, and a control that opens it is not a finding. Only after the sweep comes
+**Read the accessible name off the interactive descendant, not the wrapper.** These launchers
+are typically a positioned `div` wrapping a `button` that carries the `aria-label` and the click
+handler. Reading attributes off the outer element reports `aria: null` and clicking it may do
+nothing, both of which look like evidence of absence and are not.
+
+**Then click it — with a real mouse event.** `element.click()` on the wrapper misses a handler
+bound to the inner button; drive the pointer at its coordinates instead, and screenshot the
+result rather than inferring from the DOM. A control that exists but does not reopen the
+preference centre is not a withdrawal mechanism, and a control that opens it is not a finding. Only after the sweep comes
 back empty *and* no textual entry point works may the report say no persistent control exists —
 and the evidence line should name what was searched for, not just what was not found.
 
