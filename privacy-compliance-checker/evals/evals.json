@@ -1,0 +1,40 @@
+{
+  "skill_name": "privacy-compliance-checker",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review these fixed audit observations. EU applicability and the applicable prior-consent requirement are verified. Fresh sessions show no optional storage/access or collection before consent or after refusal. Rejection persists on a second page; acceptance and withdrawal work. Reject is outlined while Accept is filled, both clearly readable and equally easy to use. A declared checkout cookie is not observed because checkout was not visited. All agreed checks pass. Separately, a covered California scenario honours GPC for sale/sharing, with the outgoing signal verified; /.well-known/gpc.json returns 404. Produce concise findings and the overall outcome.",
+      "expected_output": "No confirmed issues; optional GPC declaration and cosmetic differences do not affect verdict; conditional cookie absence is not stale-scan evidence.",
+      "files": [],
+      "assertions": [
+        "Does not report missing gpc.json as a failure or warning",
+        "Does not report unobserved checkout cookie as a failure",
+        "Does not report button colour alone as a failure",
+        "Gives a clean outcome limited to tested scope"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review fixed evidence from an EU consent test. The tester rejected all optional purposes, then called cookies clear and localStorage.clear(), navigated to another page, and observed _ga. No capture proves the refusal survived. A bot wall then blocked further testing. Applicability of prior consent for this analytics storage is verified. Do not run a new browser audit; assess what this evidence supports and specify the valid retest.",
+      "expected_output": "Post-refusal failure is unproven; clearing state invalidated the test. Incomplete assessment, preserve and verify refusal during retest, separate withdrawal after acceptance.",
+      "files": [],
+      "assertions": [
+        "Does not call _ga proof of tracking after an active refusal",
+        "Calls overall assessment incomplete",
+        "Preserves and verifies saved refusal during the proposed retest"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Grade three independent fixed scenarios, with no new browser work. A: EU basic Consent Mode blocks Google tags until acceptance; no pre-consent ping, all required checks completed and passed. B: Advanced mode declares relevant denied defaults before tags, writes or accesses no persistent tracking identifiers and sends a cookieless measurement ping; npa is absent and the legal basis for transmission remains unverified. C: EU _fbp is reproducibly newly written and sent to an advertising collection endpoint on two loads while a verified saved refusal remains active; the applicable requirement for consent is established. Give an outcome for each without assuming missing evidence proves a breach.",
+      "expected_output": "A clean tested scope; B incomplete legal-basis verification without automatic warning or violation from absent npa; C confirmed material failure.",
+      "files": [],
+      "assertions": [
+        "Accepts basic mode with no pre-consent pings",
+        "Treats absent npa as insufficient alone to prove a violation",
+        "Separates unresolved legal basis into verification",
+        "Reports verified consent bypass as critical"
+      ]
+    }
+  ]
+}

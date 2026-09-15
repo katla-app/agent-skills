@@ -3,6 +3,11 @@
 Use this file to decide **which jurisdiction checklists to load** before auditing. Load only the
 per-jurisdiction files that apply — each one lives in `references/apac/`.
 
+Apply the main skill's grading policy to this router and every country checklist. These groupings
+reuse browser observations; they do not establish identical legal duties. Verify each obligation's
+conditions, exceptions and commencement with current primary sources before grading. Words such as
+“expected”, “best practice” and “in practice” are not by themselves statutory requirements.
+
 > **Accuracy note:** privacy law in APAC is moving fast. Dates and thresholds below reflect the
 > state of play as of **September 2026**. Several regimes have amendments or implementing
 > regulations in flight (India, Indonesia, Japan, Taiwan). Verify current status before
@@ -10,8 +15,8 @@ per-jurisdiction files that apply — each one lives in `references/apac/`.
 
 ## Step 1 — Scope the audit
 
-A site is in scope for a jurisdiction if it **targets** data subjects there. Signals to look for
-in the browser:
+Targeting data subjects is a signal to investigate a jurisdiction's scope, not a complete legal
+applicability test. Signals to look for in the browser:
 
 - Country/region selector, language switcher, or locale in the URL (`/th/`, `/id/`, `?lang=ja`)
 - Currency shown at checkout (THB, IDR, SGD, TWD, MYR, HKD, PHP, INR, JPY)
@@ -43,10 +48,10 @@ scoping wrong wastes the whole audit.
 Audit effort clusters into three shapes. Test the shape, not nine separate flows.
 
 **A. Opt-in, GDPR-shaped** — Thailand, Indonesia, Philippines, India (once in force).
-Reuse the GDPR banner test from `references/gdpr-checklist.md` almost verbatim: nothing
-non-essential before consent, equally prominent reject, granular categories, no pre-ticked boxes,
-withdrawal as easy as consent. Then layer on the local extras (language, recorded consent,
-local representative).
+Reuse the measured initial, refused, accepted and withdrawn states. Apply only the locally
+required consent behavior, accounting for alternative bases and exceptions; do not import GDPR
+button-layout requirements automatically. Then check local language, records and representation
+where required.
 
 **B. Notice-first** — Singapore, Taiwan, Hong Kong, Malaysia.
 The banner is not the centre of gravity; the **notice** is. Check that a compliant collection
@@ -68,10 +73,10 @@ These apply across most or all of the nine, so run them once and reuse the resul
   without already knowing the local language?
 - **Published accountability contact** — DPO, grievance officer, or named contact person
 - **Withdrawal channel** — a persistent way to change or revoke a choice after the first visit
-- **Breach-notification commitment** — most of these regimes now mandate it; a policy silent on
-  breach handling is a weak signal across the board
-- **Children's data** — age gating, and whether behavioural ads could reach minors (a hard
-  prohibition under India's DPDP)
+- **Breach notification** — distinguish internal procedures from any specific public disclosure
+  duty; policy silence alone does not prove no procedure exists
+- **Children's data** — establish the relevant age, processing and commencement conditions;
+  possible visits by minors alone do not establish a current violation
 
 ## Out of scope for this skill
 

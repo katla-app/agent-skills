@@ -178,33 +178,33 @@
   "jurisdictions": [
     {
       "code": "EU",
-      "law": "GDPR",
+      "law": "GDPR / ePrivacy",
       "scope": "EU / EEA",
-      "check": "Prior consent, granular categories, withdrawal as easy as consent",
+      "check": "Consent-dependent tracking",
       "verdict": "fail",
       "fix": "cmp"
     },
     {
       "code": "US-CA",
-      "law": "CCPA",
+      "law": "CCPA/CPRA",
       "scope": "California",
-      "check": "\"Do Not Sell or Share\" link shown, GPC signal honoured",
+      "check": "Sale/sharing opt-out",
       "verdict": "fail",
-      "fix": "site"
+      "fix": "cmp"
     },
     {
-      "code": "EU",
-      "law": "DMA",
-      "scope": "Gatekeepers",
-      "check": "Reject visually equal to accept before Google tags fire",
-      "verdict": "pass",
-      "fix": "cmp"
+      "code": "SG",
+      "law": "PDPA",
+      "scope": "Singapore",
+      "check": "Cookie purpose and disclosures",
+      "verdict": "review",
+      "fix": "legal"
     },
     {
       "code": "JP",
       "law": "APPI",
       "scope": "Japan",
-      "check": "Third-party transfer disclosure names recipient and destination",
+      "check": "Transfer applicability",
       "verdict": "review",
       "fix": "legal"
     },
@@ -212,122 +212,45 @@
       "code": "TH",
       "law": "PDPA",
       "scope": "Thailand",
-      "check": "Purpose notice before collection, local representative named",
-      "verdict": "fail",
-      "fix": "legal"
-    },
-    {
-      "code": "SG",
-      "law": "PDPA",
-      "scope": "Singapore",
-      "check": "Notice content and published DPO contact",
-      "verdict": "pass",
+      "check": "Notice and representation applicability",
+      "verdict": "review",
       "fix": "legal"
     },
     {
       "code": "IN",
       "law": "DPDP",
       "scope": "India",
-      "check": "Itemised purposes, withdrawal, notice languages",
-      "verdict": "readiness",
+      "check": "Commencement and notice applicability",
+      "verdict": "review",
       "fix": "legal"
     }
   ],
   "findings": [
     {
       "severity": "critical",
-      "title": "Analytics and marketing cookies set before consent",
-      "detail": "_ga, _ga_R7X2, _fbp and __lt__cid are written on first paint, before the banner is shown. GTM, Meta Pixel and LINE Tag all load unguarded.",
-      "evidence": "document.cookie at DOMContentLoaded, pre-interaction",
+      "title": "Analytics and marketing storage written before required consent",
+      "detail": "In the fictional EU scenario, _ga and _fbp are newly written before interaction. Block this consent-dependent activity until the visitor grants consent.",
+      "evidence": "Empty browser cookie jar before navigation; timestamped jar and collection requests after initial load and repeat run; banner still awaiting a choice.",
+      "requirement": "Prior consent for non-exempt terminal storage/access under the applicable national implementation of ePrivacy Article 5(3).",
+      "source": "https://eur-lex.europa.eu/eli/dir/2002/58/oj",
       "jurisdictions": [
-        "EU",
-        "TH",
-        "IN"
+        "EU"
       ],
       "fix": "cmp",
       "katlaResolves": true
     },
     {
       "severity": "critical",
-      "title": "GPC signal ignored",
-      "detail": "navigator.globalPrivacyControl is true on load and marketing tags still fire. No .well-known/gpc.json is served.",
-      "evidence": "GET /.well-known/gpc.json → 404",
+      "title": "Sale/sharing opt-out signal not enforced",
+      "detail": "In the fictional covered California scenario, documented cross-context advertising disclosures continue with GPC enabled. Enforce the opt-out for this activity.",
+      "evidence": "Sec-GPC: 1 on navigation; navigator.globalPrivacyControl true before tags load; matched identifier-bearing advertising collection requests in GPC and no-GPC captures. Scenario stipulates covered sale/sharing.",
+      "requirement": "Covered businesses must honour applicable opt-out preference signals for sale/sharing.",
+      "source": "https://cppa.ca.gov/regulations/",
       "jurisdictions": [
         "US-CA"
       ],
       "fix": "cmp",
       "katlaResolves": true
-    },
-    {
-      "severity": "critical",
-      "title": "No \"Do Not Sell or Share\" link",
-      "detail": "Footer carries a privacy policy link only. CCPA requires a clear and conspicuous opt-out link on the homepage.",
-      "jurisdictions": [
-        "US-CA"
-      ],
-      "fix": "cmp",
-      "katlaResolves": true
-    },
-    {
-      "severity": "warning",
-      "title": "One cookie unclassified",
-      "detail": "ajs_anonymous_id is set by Segment but is absent from the cookie table in the privacy policy.",
-      "jurisdictions": [
-        "EU",
-        "SG"
-      ],
-      "fix": "cmp",
-      "katlaResolves": true
-    },
-    {
-      "severity": "warning",
-      "title": "Thai notice falls back to English",
-      "detail": "The th-TH language switcher resolves, but /privacy returns the English policy. Thailand requires the notice in a language the data subject understands.",
-      "jurisdictions": [
-        "TH"
-      ],
-      "fix": "site",
-      "katlaResolves": false
-    },
-    {
-      "severity": "warning",
-      "title": "No local representative named for Thailand",
-      "detail": "PDPA s.37(5) requires an appointed representative in Thailand for foreign controllers offering goods to Thai data subjects.",
-      "jurisdictions": [
-        "TH"
-      ],
-      "fix": "legal",
-      "katlaResolves": false
-    },
-    {
-      "severity": "warning",
-      "title": "Cross-border transfer wording is generic",
-      "detail": "The policy says data \"may be transferred outside your country\". APPI requires naming the destination country, its regime, and the recipient's safeguards.",
-      "jurisdictions": [
-        "JP"
-      ],
-      "fix": "legal",
-      "katlaResolves": false
-    },
-    {
-      "severity": "readiness",
-      "title": "DPDP itemised purposes not yet present",
-      "detail": "Marketing is offered as one category. India will require a per-purpose itemised notice with a withdrawal route. Substantive obligations land around May 2027.",
-      "jurisdictions": [
-        "IN"
-      ],
-      "fix": "legal",
-      "katlaResolves": false
-    },
-    {
-      "severity": "readiness",
-      "title": "DPDP notice language menu",
-      "detail": "Notice is English-only. From ~May 2027 it must be offered in English plus any of the 22 Eighth Schedule languages on request.",
-      "jurisdictions": [
-        "IN"
-      ],
-      "fix": "legal",
-      "katlaResolves": false
     }
   ],
   "passed": [
@@ -347,5 +270,52 @@
     "Consent records and their audit trail",
     "Breach notification procedure and 72-hour readiness",
     "DPO appointment filed with the Singapore PDPC"
+  ],
+  "assessment": {
+    "complete": false,
+    "pages": [
+      "https://shop.example.com/",
+      "https://shop.example.com/catalog",
+      "https://shop.example.com/privacy"
+    ],
+    "region": "Separate EU and California browser scenarios",
+    "conditions": "Fictional example: fresh isolated profiles; initial, reject, accept and withdrawal captures; 10-second observation windows after CMP initialisation; California GPC enabled before navigation.",
+    "limitations": [
+      "Illustrative findings, not a real audit. APAC applicability and disclosures need verification."
+    ]
+  },
+  "needsVerification": [
+    {
+      "title": "Unclassified observed cookie",
+      "detail": "Confirm the purpose of ajs_anonymous_id and whether existing purpose/recipient disclosures cover its use. A missing individual cookie row alone is not a confirmed violation.",
+      "jurisdictions": [
+        "EU",
+        "SG"
+      ]
+    },
+    {
+      "title": "Thai notice and representation applicability",
+      "detail": "Confirm applicable language and representative duties and exceptions before grading the English notice or missing representative disclosure.",
+      "jurisdictions": [
+        "TH"
+      ]
+    },
+    {
+      "title": "Japan transfer conditions",
+      "detail": "Confirm whether recipients link the observed identifiers to personal data and which transfer basis and disclosures apply.",
+      "jurisdictions": [
+        "JP"
+      ]
+    },
+    {
+      "title": "India commencement and notice requirements",
+      "detail": "Verify current commencement dates and language/notice conditions against primary sources before recording dated readiness findings.",
+      "jurisdictions": [
+        "IN"
+      ]
+    }
+  ],
+  "improvements": [
+    "Consider publishing the optional GPC support resource; its absence does not affect this assessment."
   ]
 }

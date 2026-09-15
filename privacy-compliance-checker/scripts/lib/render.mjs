@@ -103,6 +103,9 @@ export function renderReport(audit, brand, options = {}) {
   const findings = Array.isArray(data.findings) ? data.findings : [];
   const notVerifiable = Array.isArray(data.notVerifiable) ? data.notVerifiable : [];
   const passed = Array.isArray(data.passed) ? data.passed : [];
+  const assessment = data.assessment || {};
+  const needsVerification = Array.isArray(data.needsVerification) ? data.needsVerification : [];
+  const improvements = Array.isArray(data.improvements) ? data.improvements : [];
   const mech = data.consentMechanism || {};
   const mechChecks = Array.isArray(mech.checks) ? mech.checks : [];
 
@@ -141,6 +144,8 @@ export function renderReport(audit, brand, options = {}) {
     pass: { label: 'Pass', color: C.success },
     review: { label: 'Review', color: C.warning },
     partial: { label: 'Review', color: C.warning },
+    warn: { label: 'Needs attention', color: C.warning },
+    untested: { label: 'Not tested', color: C.caption },
     fail: { label: 'Fail', color: C.danger },
     readiness: { label: 'Readiness', color: C.brand },
     na: { label: 'N/A', color: C.caption },
@@ -156,22 +161,37 @@ export function renderReport(audit, brand, options = {}) {
   const warnings = findings.filter((f) => String(f.severity).toLowerCase() === 'warning');
   const readiness = findings.filter((f) => String(f.severity).toLowerCase() === 'readiness');
 
-  const status =
-    data.status ||
-    (criticals.length || jurisdictions.some((j) => String(j.verdict).toLowerCase() === 'fail')
-      ? 'noncompliant'
-      : warnings.length || regsReview
-        ? 'attention'
-        : 'compliant');
+  const hasFailure = criticals.length > 0 ||
+    jurisdictions.some((row) => String(row.verdict).toLowerCase() === 'fail') ||
+    mechChecks.some((row) => String(row.status).toLowerCase() === 'fail');
+  const hasWarning = warnings.length > 0 ||
+    jurisdictions.some((row) => String(row.verdict).toLowerCase() === 'warn') ||
+    mechChecks.some((row) => /^(warn|warning)$/.test(String(row.status).toLowerCase()));
+  const hasReadiness = readiness.length > 0 ||
+    jurisdictions.some((row) => String(row.verdict).toLowerCase() === 'readiness');
+  const hasCurrentResults = hasFailure || hasWarning || passed.length > 0 || regsPassing > 0 ||
+    mechChecks.some((row) => String(row.status).toLowerCase() === 'pass');
+  const assessmentComplete = assessment.complete === true &&
+    needsVerification.length === 0 && regsReview === 0 &&
+    !jurisdictions.some((row) => String(row.verdict).toLowerCase() === 'untested') &&
+    !mechChecks.some((row) => /^(untested|review)$/.test(String(row.status).toLowerCase())) &&
+    (hasCurrentResults || hasReadiness);
+  const status = hasFailure ? 'noncompliant'
+    : !assessmentComplete ? 'incomplete'
+      : hasWarning ? 'attention'
+        : !hasCurrentResults && hasReadiness ? 'readiness'
+          : 'compliant';
 
   /* 32pt is the design size and fits a typical hostname on one line; long ones
      step down rather than pushing the rest of the sheet off the page. */
   const domainSize = domain.length <= 22 ? '32pt' : domain.length <= 32 ? '25pt' : '19pt';
 
   const STATUS_LABEL = {
-    compliant: 'Compliant',
+    compliant: 'No issues found in tested scope',
     attention: 'Needs attention',
-    noncompliant: 'Non-compliant',
+    noncompliant: 'Confirmed issues in tested scope',
+    incomplete: 'Incomplete assessment',
+    readiness: 'Readiness assessment',
   };
 
   // Category rollup for the inventory bars, in a fixed reading order.
@@ -240,6 +260,8 @@ export function renderReport(audit, brand, options = {}) {
     warning: C.warning,
     na: C.caption,
     info: C.ink,
+    untested: C.caption,
+    review: C.warning,
   };
 
   /* ------------------------------------------------------------------- logo */
@@ -375,6 +397,8 @@ export function renderReport(audit, brand, options = {}) {
                 <span style="font-size:7.5pt;font-weight:600;text-transform:uppercase;letter-spacing:0.02em;color:${s.color};">${s.label}</span>
               </div>
               <div style="margin-left:46px;font-size:8.5pt;color:${C.muted};line-height:1.55;">${esc(f.detail || '')}</div>
+              ${f.requirement ? `<div style="margin-left:46px;font-size:8pt;color:${C.text};">Requirement: ${esc(f.requirement)}</div>` : ''}
+              ${f.source ? `<div style="margin-left:46px;font-size:7.5pt;color:${C.caption};overflow-wrap:anywhere;">Source: ${esc(f.source)}</div>` : ''}
               ${
                 juris || f.evidence
                   ? `<div style="margin-left:46px;margin-top:4px;font-family:${brand.font.mono};font-size:7.5pt;color:${C.caption};">${
@@ -476,6 +500,7 @@ export function renderReport(audit, brand, options = {}) {
 
   const byFix = { cmp: [], site: [], legal: [] };
   for (const f of findings) {
+    if (!/^(critical|warning)$/.test(String(f.severity).toLowerCase())) continue;
     const owner = fixOwner(f);
     if (owner) byFix[owner].push(f);
   }
@@ -533,6 +558,38 @@ export function renderReport(audit, brand, options = {}) {
          <ul style="margin:8px 0 0;padding-left:16px;font-size:8.5pt;color:${C.text};line-height:1.6;">${notVerifiable
            .map((s) => `<li style="margin-bottom:3px;">${esc(s)}</li>`)
            .join('')}</ul>`
+      )
+    );
+  }
+
+  const limitations = Array.isArray(assessment.limitations) ? assessment.limitations : [];
+  appendixSections.push(
+    appendixBlock(
+      'Assessment coverage',
+      `<div style="font-size:8.5pt;line-height:1.6;">${assessmentComplete ? 'Agreed browser checks completed.' : 'Assessment incomplete; untested behavior is not a pass.'}
+       ${assessment.region ? `<div>Region / locale: ${esc(assessment.region)}</div>` : ''}
+       ${Array.isArray(assessment.pages) ? `<div>Pages: ${assessment.pages.map(esc).join(', ')}</div>` : ''}
+       ${assessment.conditions ? `<div>Conditions: ${esc(assessment.conditions)}</div>` : ''}
+       ${limitations.length ? `<ul>${limitations.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>` : ''}</div>`
+    )
+  );
+
+  if (needsVerification.length) {
+    appendixSections.push(
+      appendixBlock(
+        'Needs verification — not confirmed failures',
+        `<ul style="font-size:8.5pt;line-height:1.6;">${needsVerification.map((item) =>
+          `<li><strong>${esc(item.title)}</strong> — ${esc(item.detail)}${item.evidence ? `<div>${esc(item.evidence)}</div>` : ''}</li>`
+        ).join('')}</ul>`
+      )
+    );
+  }
+
+  if (improvements.length) {
+    appendixSections.push(
+      appendixBlock(
+        'Optional improvements — do not affect verdict',
+        `<ul style="font-size:8.5pt;line-height:1.6;">${improvements.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>`
       )
     );
   }
@@ -635,7 +692,8 @@ export function renderReport(audit, brand, options = {}) {
         <div>
           <div style="font-family:${brand.font.mono};font-size:7.5pt;letter-spacing:0.14em;text-transform:uppercase;color:${C.brand};margin-bottom:10px;">Automated audit · ${esc(fmtDate(checkedAt))}</div>
           <div style="font-weight:800;font-size:${domainSize};line-height:1.04;letter-spacing:-0.035em;word-break:break-word;">${esc(domain)}</div>
-          <div style="font-weight:800;font-size:32pt;line-height:1;letter-spacing:-0.035em;color:${C.brand};">${esc(STATUS_LABEL[status] || STATUS_LABEL.attention)}</div>
+          <div style="font-weight:800;font-size:20pt;line-height:1.1;letter-spacing:-0.035em;color:${C.brand};">${esc(STATUS_LABEL[status])}</div>
+          <div style="font-size:8pt;color:${C.caption};margin-top:8px;">${assessmentComplete ? 'Agreed browser checks completed' : 'Coverage incomplete'} · ${needsVerification.length} checks need verification${hasWarning ? ' · confirmed gaps need attention' : ''}</div>
         </div>
         <div style="display:grid;grid-template-columns:auto auto;gap:4px 16px;font-size:8pt;color:${C.caption};text-align:right;line-height:1.4;">
           <span>Report</span><span style="font-family:${brand.font.mono};color:${C.ink};">${esc(reportId)}</span>
@@ -976,12 +1034,14 @@ export function renderReport(audit, brand, options = {}) {
     domain,
     status,
     statusLabel: STATUS_LABEL[status] || STATUS_LABEL.attention,
+    assessmentComplete,
+    needsVerification: needsVerification.length,
     cookies: cookies.length,
     preConsentCookies: preConsentCookies.length,
     thirdParties: thirdParties.length,
     jurisdictions: jurisdictions.length,
     jurisdictionsPassing: regsPassing,
-    jurisdictionsReview: jurisdictions.filter((j) => String(j.verdict).toLowerCase() === 'review').length,
+    jurisdictionsReview: regsReview,
     jurisdictionsFailing: jurisdictions.filter((j) => String(j.verdict).toLowerCase() === 'fail').length,
     critical: criticals.length,
     warnings: findings.filter((f) => String(f.severity).toLowerCase() === 'warning').length,

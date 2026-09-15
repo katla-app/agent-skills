@@ -1,9 +1,9 @@
 # Branded report — findings schema
 
 The audit produces a `findings.json`; `scripts/render-report.mjs` turns it into a
-branded A4 HTML report. The renderer makes **no compliance judgements of its own** — it
-lays out what you give it and derives only arithmetic (counts, percentages, verdict
-tallies). If a fact is not in the JSON it will not appear in the report.
+branded A4 HTML report. The renderer applies the status aggregation rules below to recorded
+outcomes and coverage; it does not independently decide legal applicability or evidence quality.
+If a fact is not in the JSON it will not appear in the report.
 
 ```bash
 node scripts/render-report.mjs findings.json -o report.html
@@ -23,7 +23,8 @@ node scripts/render-report.mjs findings.json -o report.html
 | `checkedAt` | ISO 8601 string | no | Defaults to now |
 | `preparedFor` | string | no | Defaults to `Data Protection Officer` |
 | `reportId` | string | no | Derived stably from url + date if absent |
-| `status` | `compliant` \| `attention` \| `noncompliant` | no | **Derived if absent — prefer letting it derive** |
+| `status` | string | no | Legacy input, ignored; derived from outcomes and coverage to prevent contradictory overrides |
+| `assessment` | object | yes for new reports | `{ complete: boolean, pages: string[], region: string, conditions: string, limitations: string[] }` |
 | `scope` | object | recommended | `{ markets: string[], basis: string }` |
 | `consentMechanism` | object | recommended | See below |
 | `cookies` | array | recommended | See below |
@@ -32,12 +33,30 @@ node scripts/render-report.mjs findings.json -o report.html
 | `findings` | array | recommended | See below |
 | `passed` | string[] | no | Checks that passed, for the appendix |
 | `notVerifiable` | string[] | no | Obligations invisible from the browser |
+| `needsVerification` | object[] | no | `{ title, detail, evidence?, jurisdictions? }`; explain the unresolved check and what would resolve it |
+| `improvements` | string[] | no | Optional suggestions; never counted as failures or warnings |
 
 ¹ `url` or `domain` — at least one.
 
-`status` derivation: any critical finding or any `fail` verdict → `noncompliant`; else any
-warning or `review` verdict → `attention`; else `compliant`. Override it only when you have
-a reason the data does not carry.
+`status` is derived in this order:
+1. Any critical finding, failed jurisdiction, or failed consent check → `noncompliant`, displayed
+   as **Confirmed issues in tested scope**, even if other checks remain incomplete.
+2. Incomplete assessment → `incomplete`, displayed as **Incomplete assessment**.
+3. Any confirmed warning finding, consent `warn`/`warning`, or jurisdiction `warn` → `attention`.
+4. Only future obligations assessed → `readiness`, displayed as **Readiness assessment**.
+5. Otherwise → `compliant`, displayed as **No issues found in tested scope**.
+
+Completion requires `assessment.complete: true`, some recorded current check results or readiness
+results, no `needsVerification` entries, no jurisdiction `review`/`partial`/`untested`, and no
+consent `review`/`untested`. An empty report cannot pass. Legacy reports without explicit coverage
+render incomplete unless they already contain confirmed failures. `status` cannot override this.
+
+Set `assessment.complete` only after completing the agreed browser scope. Record tested pages,
+region/locale, clean session identifiers, observation windows and consent/GPC conditions.
+Limitations can describe excluded internal duties without making a surface assessment incomplete;
+blocked or unresolved checks inside the agreed scope require `complete: false` and verification
+entries. Coverage is displayed even when confirmed failures take precedence in the headline.
+Warnings still appear and remain counted when the headline is incomplete.
 
 ## `cookies[]`
 
@@ -51,7 +70,7 @@ a reason the data does not carry.
 | `purpose` | string | One short line |
 | `lifetime` | string | Human-readable, e.g. `90 days`, `session`, `400 days` — from the jar's `expires` |
 | `httpOnly` | boolean | From the jar. `document.cookie` cannot see HttpOnly cookies at all |
-| `secure` | boolean | From the jar. A tracking cookie without this is a finding |
+| `secure` | boolean | From the jar. Assess purpose and exposure before raising a security finding |
 | `sameSite` | string | From the jar, when set |
 | `declared` | boolean | Whether the site's own CMP declaration or cookie policy lists this cookie |
 
@@ -61,9 +80,9 @@ original five-column layout rather than a table full of blanks. Populate them wh
 readable; a `declared: false` row is what turns "the declaration is incomplete" from an assertion
 into something the reader can check.
 
-`functional`, `security`, `necessary` and `essential` count as **essential**. An essential
-cookie with `preConsent: true` is reported as exempt, not as a violation — so classify
-honestly and the report gets the alarm level right by itself.
+The inventory groups `functional`, `security`, `necessary` and `essential` together. This display
+is not a legal exemption decision: verify the actual necessary purpose before using these labels.
+An unknown cookie or pre-consent presence alone does not establish a legal failure.
 
 ## `consentMechanism`
 
@@ -76,7 +95,10 @@ honestly and the report gets the alarm level right by itself.
 }
 ```
 
-`status` is `pass` | `fail` | `warn` | `na` | `info` and drives only the colour.
+`status` is `pass` | `fail` | `warn` | `untested` | `na` | `info`.
+It affects both colour and aggregate status. Use `untested` for missing required evidence,
+`warn` for a confirmed smaller gap, and `info` for neutral observations. Legacy `warning` and
+`review` are accepted as warning and unresolved respectively. Do not put optional suggestions here.
 
 `fix` means the same thing it means on a finding: where the work lands if this check is not
 passing. Tag every check, passing ones included — the web report lets a reader filter the whole
@@ -101,7 +123,7 @@ One row per regime **in scope** — never pad it with regimes you did not audit.
 | `law` | Shown in the pill — `GDPR`, `CCPA`, `PDPA`, `APPI` … |
 | `scope` | Territory shown after the requirement — `EU / EEA`, `Thailand` … |
 | `check` | The requirement tested, one line |
-| `verdict` | `pass` \| `review` \| `fail` \| `readiness` \| `na` |
+| `verdict` | `pass` \| `warn` \| `review` \| `fail` \| `readiness` \| `untested` \| `na`; `review` means unresolved, not a confirmed smaller gap |
 | `fix` | `cmp` \| `site` \| `legal` — **required**, who would apply the work. Same test as on a finding. `publish-report.mjs` refuses a document missing it |
 
 Use `readiness` for obligations not yet in force — India's DPDP in particular. It renders in
@@ -117,11 +139,17 @@ The first 7 rows appear on page one; the appendix always carries the full table.
 | `title` | Short — clipped to 60 chars on the summary card, full in the appendix |
 | `detail` | 1–2 sentences — clipped to 135 chars on the card, full in the appendix |
 | `evidence` | What you observed: a console result, a status code, a selector |
+| `requirement` | Applicable obligation and relevant conditions; required for new confirmed findings |
+| `source` | Current primary-source URL supporting the obligation; required for new confirmed findings |
 | `jurisdictions` | Codes this affects, matching `jurisdictions[].code` |
 | `fix` | `cmp` \| `site` \| `legal` — who applies the fix. See below |
 | `katlaResolves` | **Superseded by `fix`.** Boolean kept only so older documents still render |
 
 Findings are sorted critical → warning → readiness; the top three reach page one.
+Use `critical` only for confirmed material failures and `warning` for confirmed smaller gaps.
+Unresolved applicability or observations go in `needsVerification[]`, optional advice in
+`improvements[]`. Reuse evidence across jurisdictions without duplicating one root-cause finding.
+The renderer displays requirement and source with the finding's evidence in the appendix.
 
 ### `fix` — who applies it
 

@@ -16,6 +16,11 @@ branded, printable A4 report — a one-page summary for a DPO or client, plus an
 every finding, the full jurisdiction table, the cookie and third-party inventories, and a
 remediation split separating what a consent platform fixes from what needs legal work.
 
+Reports separate confirmed issues, checks needing verification, and optional improvements.
+An incomplete audit cannot receive a clean verdict. New findings documents include explicit
+`assessment` coverage; older documents without coverage render as incomplete unless they contain
+confirmed failures. The same renderer must be updated on the report host for identical results.
+
 ```bash
 node privacy-compliance-checker/scripts/render-report.mjs findings.json -o report.html
 ```

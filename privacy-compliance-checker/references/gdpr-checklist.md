@@ -1,30 +1,34 @@
 # GDPR Compliance Checklist
 
+Apply the grading policy in `../SKILL.md` before turning any checkbox into a finding.
+Establish applicability and current national ePrivacy rules. Untested and optional items are
+not failures. A banner is unnecessary when the applicable processing does not require consent.
+
 ## Cookie Consent (ePrivacy + GDPR)
 
 ### Banner Requirements
 
 - [ ] **Consent before cookies**: No non-essential cookies are set before the user gives consent
 - [ ] **Clear affirmative action**: Consent requires a clear positive action (clicking "Accept")
-- [ ] **Reject reachable at the same cost as accept**: "Reject All" is on the first layer, one click deep, and matches "Accept All" in size, font and row position. A *colour* difference — filled accept, outlined reject — is **not** a finding on its own: the EDPB Cookie Banner Taskforce declined to treat colour differentiation as a violation per se. Measure the reject label's own contrast before judging; an outlined button on white often beats a filled one. Report it only when the reject option is genuinely degraded — smaller, greyed into the background, below the fold, or an extra click away
+- [ ] **Effective refusal**: Check first-layer rejection against applicable regulator guidance. Report an obstructed or materially obscured choice with evidence of effort or visibility. Different colours, dimensions or positions alone do not establish a failure
 - [ ] **Granular choices**: Users can select individual cookie categories (analytics, marketing, personalization, etc.)
 - [ ] **No pre-ticked boxes**: Non-essential cookie categories are unchecked by default
 - [ ] **No cookie wall**: Access to the site is not contingent on accepting cookies (unless strictly necessary)
 - [ ] **Scrolling is not consent**: Continuing to browse does not constitute consent
 - [ ] **Closing banner is not consent**: Dismissing the banner without action does not set non-essential cookies
 - [ ] **No dark patterns**: No manipulative design (e.g., tiny reject button, confusing language, shame-based copy)
-- [ ] **Re-consent interval**: Consent is re-requested at reasonable intervals (max 12 months under DMA)
+- [ ] **Consent renewal**: Check the applicable national guidance and changes in processing; do not apply a universal 12-month expiry derived from the DMA
 
 ### Consent Record
 
-- [ ] **Consent is recorded**: The site stores proof of consent (timestamp, categories accepted)
+- [ ] **Consent is recorded**: Verify the browser's saved choice; server-side proof and retention belong in `notVerifiable[]` unless independently evidenced
 - [ ] **Consent is withdrawable**: Users can change their consent as easily as they gave it
 - [ ] **Settings accessible**: A link/button to re-open cookie preferences is always available (e.g., footer link or floating icon)
 
 ### Cookie Guard
 
-- [ ] **Scripts blocked until consent**: Analytics, marketing, and other non-essential scripts do not execute before consent
-- [ ] **Cookies removed on withdrawal**: When consent is withdrawn, associated cookies are deleted
+- [ ] **Consent-dependent processing blocked**: Check collection and storage/access behavior, distinguishing library loading from tracking; use the main skill's Consent Mode rules
+- [ ] **Withdrawal enforced**: Consent-dependent activity stops and refusal persists. Residual cookie presence alone does not prove continued use; assess deletion separately against the applicable duty
 - [ ] **Third-party cookies managed**: Third-party tracking cookies are also blocked until consent
 
 ## Privacy Policy (GDPR Article 13 & 14)
@@ -33,7 +37,7 @@
 
 - [ ] **Identity of controller**: Full legal name and contact details of the data controller
 - [ ] **DPO contact**: Data Protection Officer contact details (if applicable)
-- [ ] **Representative**: EU representative details (if controller is outside EU)
+- [ ] **Representative**: EU representative details where Article 27 applies, accounting for its exceptions
 
 ### Data Processing
 
@@ -41,7 +45,7 @@
 - [ ] **Processing purposes**: Clearly states why each category of data is processed
 - [ ] **Legal basis**: Identifies legal basis for each processing activity (consent, contract, legitimate interest, legal obligation, vital interest, public task)
 - [ ] **Legitimate interest details**: If legitimate interest is used, explains the interests pursued
-- [ ] **Automated decision-making**: Discloses any automated profiling or decision-making
+- [ ] **Automated decision-making**: Required disclosures where the relevant automated decision-making provisions apply
 
 ### Data Sharing
 
@@ -62,28 +66,32 @@
 
 ### Retention & Updates
 
-- [ ] **Retention periods**: States how long each category of data is kept
-- [ ] **Policy date**: Policy shows when it was last updated
-- [ ] **Change notification**: Explains how users will be notified of policy changes
+- [ ] **Retention**: States the period, or permitted criteria for determining it
+- [ ] **Policy accuracy**: Information reflects current processing; absence of a visible update date alone is not a GDPR failure
+- [ ] **Change notification**: Assess information duties for actual processing changes rather than requiring a particular boilerplate paragraph
 
 ## Technical Requirements
 
 ### Data Security
 
 - [ ] **HTTPS**: Site uses HTTPS throughout
-- [ ] **Secure cookies**: Cookies use `Secure` flag
+- [ ] **Secure cookies**: Assess exposure and purpose before grading missing flags; distinguish optional hardening from a confirmed security gap
 - [ ] **HttpOnly cookies**: Session cookies use `HttpOnly` flag where appropriate
 - [ ] **SameSite attribute**: Cookies set appropriate `SameSite` attribute
 
 ### Third-Party Integrations
 
-- [ ] **Google Analytics**: Configured with anonymized IP (`anonymize_ip`) or Consent Mode
+- [ ] **Google Analytics**: Assess the current product's actual consent and data behavior; neither legacy `anonymize_ip` nor Consent Mode alone proves compliance
 - [ ] **Social media widgets**: Not loading tracking scripts without consent
-- [ ] **Embedded content**: YouTube/Vimeo/etc. use privacy-enhanced mode
-- [ ] **Font/CDN loading**: External resources don't leak personal data
+- [ ] **Embedded content**: Assess actual storage/access and transmission; a product's privacy mode is not itself a legal requirement or guarantee
+- [ ] **Font/CDN loading**: Record transmissions and assess applicable bases/safeguards; a third-party hostname alone does not prove unlawful disclosure
 
 ## DMA (Digital Markets Act) Additional Requirements
 
-- [ ] **Visual parity**: Reject button matches Accept in size, font and position and is not visually degraded. Identical colour is **not** required — grade the reject option on whether it is as easy to find and click, not on whether it is styled the same
-- [ ] **Temporal restriction**: After rejection, consent cannot be re-requested for at least 1 year
+- Apply this section only to designated gatekeepers and the relevant covered processing; using a gatekeeper's analytics product does not make the audited business a gatekeeper
+- [ ] **Temporal restriction**: Verify Article 5(2)'s restriction on repeating requests after refusal or withdrawal; it is not a universal cookie-consent expiry rule
 - [ ] **No forced consent**: Gatekeeper platforms cannot require consent for cross-service data combination
+
+Primary sources to verify for the audited context:
+- [GDPR text](https://eur-lex.europa.eu/eli/reg/2016/679/oj)
+- [European Commission DMA overview](https://digital-markets-act.ec.europa.eu/about-dma_en)
