@@ -18,8 +18,8 @@ node scripts/render-report.mjs findings.json -o report.html
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `url` | string | yes¹ | Full URL audited |
-| `domain` | string | no | Derived from `url` if absent |
+| `url` | string | yes¹ | Requested full audit URL; never replace it with an off-host redirect destination |
+| `domain` | string | no | Exact requested hostname, derived from `url` if absent; retain subdomains such as `www` |
 | `checkedAt` | ISO 8601 string | no | Defaults to now |
 | `preparedFor` | string | no | Defaults to `Data Protection Officer` |
 | `reportId` | string | no | Derived stably from url + date if absent |
@@ -58,6 +58,12 @@ blocked or unresolved checks inside the agreed scope require `complete: false` a
 entries. Coverage is displayed even when confirmed failures take precedence in the headline.
 Warnings still appear and remain counted when the headline is incomplete.
 
+Every URL in `assessment.pages` must have the exact requested hostname. Record skipped off-host
+destinations in `assessment.limitations`, not as audited pages or failed consent checks. Never
+aggregate separate hosts into one report. Excluding another host does not itself make coverage
+incomplete; an applicable check blocked by an off-host-only notice or redirect remains untested.
+Findings, consent checks, jurisdiction verdicts and inventory totals must all use this same scope.
+
 ## `cookies[]`
 
 | Field | Type | Notes |
@@ -66,7 +72,7 @@ Warnings still appear and remain counted when the headline is incomplete.
 | `domain` | string | Setting domain |
 | `category` | string | `functional` `personalization` `analytics` `marketing` `security` `unknown` — `necessary`/`essential`/`unclassified` also accepted |
 | `thirdParty` | boolean | |
-| `preConsent` | boolean | Present before any consent interaction |
+| `preConsent` | boolean | Observed in a verified clean pre-choice capture on the requested host; not inferred from an aggregate jar |
 | `purpose` | string | One short line |
 | `lifetime` | string | Human-readable, e.g. `90 days`, `session`, `400 days` — from the jar's `expires` |
 | `httpOnly` | boolean | From the jar. `document.cookie` cannot see HttpOnly cookies at all |
@@ -83,6 +89,15 @@ into something the reader can check.
 The inventory groups `functional`, `security`, `necessary` and `essential` together. This display
 is not a legal exemption decision: verify the actual necessary purpose before using these labels.
 An unknown cookie or pre-consent presence alone does not establish a legal failure.
+
+Retain page URL, session, consent state and capture time in the supporting audit evidence for
+each inventory entry. Include third-party cookies only when attributable to an in-scope page;
+cookie-domain matching alone neither includes nor excludes an observation. Exclude cookies from
+off-host visits and retest contaminated sessions. Cookies first observed after acceptance do not
+count as pre-consent. Local/session storage belongs in behavioral evidence, not `cookies[]`.
+Apply the same provenance rule to `thirdParties[]`: observed embedded requests are in scope,
+hosts discovered only by visiting another site are not. The inventory and headline must agree
+with the consent checks for the requested host.
 
 ## `consentMechanism`
 

@@ -5,16 +5,13 @@ description: >-
   browser automation. Use when the user mentions "GDPR compliance check," "CCPA compliance,"
   "privacy compliance audit," "cookie compliance," "check my site for GDPR," "is my site
   GDPR compliant," "privacy regulation check," "cookie banner check," "consent compliance,"
-  "Do Not Sell check," "privacy policy check," or wants to verify that a website properly
-  handles cookie consent, user privacy rights, and data protection requirements. Also covers
+  "Do Not Sell check," "privacy policy check," or wants to verify cookie consent and privacy rights.
+  Also covers
   APAC regimes — use when the user mentions "APPI," "Japan privacy," "Thailand PDPA,"
   "Indonesia PDP Law," "UU PDP," "Singapore PDPA," "Taiwan PDPA," "Malaysia PDPA," "PDPO,"
   "Hong Kong privacy," "Philippines Data Privacy Act," "RA 10173," "DPDP," "India privacy law,"
   "APAC privacy compliance," or asks whether a site is compliant in a specific Asian market.
-  Also produces a branded, printable A4 compliance report — use when the user asks for a
-  "compliance report," "privacy audit report," "GDPR report," "cookie audit PDF," "branded
-  report," a "shareable link," "link to the report," "publish the report," or a report to hand
-  to a DPO, client, or legal team.
+  Produces branded, printable compliance reports and shareable report links for DPOs and clients.
 ---
 
 # Privacy Compliance Checker — GDPR, CCPA & APAC
@@ -57,6 +54,28 @@ the same. A related failed check is supporting evidence, not another issue to co
 ## Workflow
 
 ### 1. Scope and prepare
+
+**Lock the audit to the exact hostname in the requested URL.** Compare parsed URL hostnames
+for equality; shared ownership, a common parent domain, suffix matching and navigation links
+never expand scope. For `https://katla.app`, `docs.katla.app`, `www.katla.app`, login providers
+and all other hosts are out of scope. If multiple hosts are explicitly requested, run separate
+audits with separate sessions, inventories and reports for each host.
+
+Resolve link destinations before clicking. Keep every audited page, second-page consent test,
+policy read and active fetch on that host. Do not follow off-host links, open off-host popups,
+or continue through off-host redirects, including login, checkout and canonical/www redirects.
+Use navigation interception to prevent those transitions when the browser tool supports it;
+verify the actual URL after each navigation. If an unexpected off-host navigation occurs, stop
+that scenario, discard its contaminated state and rerun on-host in a new verified clean session.
+If the entry URL redirects off-host, report that the requested host could not be assessed;
+do not silently substitute the destination. Record excluded destinations as scope limitations,
+never as missing-banner failures or obligations to audit more hosts. An off-host notice that
+prevents completing an applicable disclosure check makes that check untested, not a violation.
+
+Observe external scripts, frames, CMP APIs and network requests loaded by the in-scope page
+without navigating to their hosts or blocking their normal loading. Their activity remains
+evidence about the in-scope page. Primary-source legal/technical research uses separate research
+tools or sessions; those sites are never audit targets and their storage never enters the audit.
 
 Use markets already supplied by the user. Otherwise inspect language, shipping destinations,
 currency and business location; state a provisional scope and continue useful work. Ask only for
@@ -110,7 +129,8 @@ Run only the flows needed by the applicable requirements.
 2. Click the actual Reject control or reject all optional purposes through the preference UI.
    A direct CMP API call may diagnose wiring but does not prove the visible control works.
 3. Confirm the rejected state in the UI and its stored decision.
-4. Navigate to another representative page and reload, preserving the consent record.
+4. Navigate to another representative page on the exact requested host and reload, preserving
+   the consent record. If none is available, test reload persistence and state the coverage limit.
 5. Confirm refusal is still active and capture new network/storage activity.
 
 Do not clear all cookies or localStorage after rejecting: that can delete the refusal itself.
@@ -160,7 +180,8 @@ Technical source: [Google Consent Mode overview](https://developers.google.com/t
 
 ### 5. Check notices and conditional obligations
 
-Read the actual notice and linked disclosures. Test whether applicable information is present,
+Read the actual notice and linked disclosures on the requested host, applying the scope boundary
+above before following any link. Test whether applicable information is present,
 accurate and accessible: controller/contact, purposes and bases, retention periods or permitted
 criteria, recipients, transfers and rights. Apply local language, DPO/representative and other
 duties only after checking their conditions.
@@ -182,6 +203,19 @@ appointments, contracts, breach procedures and consent-record retention under `n
 unless a specific public disclosure duty applies.
 
 ### 6. Reconcile declared and observed cookies
+
+Attribute each cookie, storage entry and third-party request to the in-scope page URL, session,
+consent state and capture time that produced it. A cookie's domain alone is not provenance:
+parent-domain cookies can be set during a subdomain visit, while legitimate observations from
+embedded third parties can have a different domain. Include only activity attributable to
+in-scope pages in clean scenarios; never merge a browser-wide jar or observations from off-host
+visits. If provenance is missing, retest the affected scenario or mark it untested.
+
+Keep pre-choice, refusal, acceptance and withdrawal observations distinct. Set `preConsent: true`
+only for cookies observed during a verified clean pre-choice capture on the requested host;
+cookies first observed after acceptance must not inflate the pre-consent count. Keep localStorage
+and sessionStorage evidence separate from the cookie inventory and cookie totals. Reconcile
+inventory totals, consent checks and the headline against the same scoped evidence.
 
 Compare the site's disclosures with observations across tested states and pages:
 - **Observed, not individually listed:** check whether purposes and recipients are adequately
@@ -232,6 +266,11 @@ assessment.
 
 ## Consistency checks before delivery
 
+- All audited pages use the exact requested host; off-host visits contribute no findings,
+  consent failures, inventory entries or verdict changes. Embedded external activity is attributed
+  to its in-scope initiating page. Excluded hosts alone do not make the audit incomplete.
+- Cookie counts use only attributable cookies and verified consent states; storage entries are
+  not cookies, and post-acceptance observations are not pre-consent evidence.
 - Each failure has applicable authority, reproducible evidence, a concrete fix and impact.
 - Rejection evidence preserves the saved refusal; withdrawal is tested after acceptance.
 - Missing information is neither a failure nor a pass.

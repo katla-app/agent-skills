@@ -35,6 +35,47 @@
         "Separates unresolved legal basis into verification",
         "Reports verified consent bypass as critical"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Audit only https://katla.app. Use these fixed observations without browsing: clean katla.app scenarios pass all agreed applicable checks, with zero pre-choice cookies or storage and two GA cookies first observed after acceptance. A previous tester separately visited docs.katla.app and an external hosted-login page. Docs had no banner and wrote two localStorage identifiers; login set four cookies. Their draft says 'Consent layer present on all audited hosts: Absent on docs.katla.app' and merges everything into the cookie inventory. On katla.app itself, an embedded consent.katla.app API request was observed. Correct the scope, inventory and outcome; say which further links you would follow.",
+      "expected_output": "A completed, clean katla.app-only assessment. Exclude docs/login observations and failures, count the two accepted GA cookies with zero pre-consent cookies, retain the embedded consent API observation, and follow only exact-host links.",
+      "files": [],
+      "assertions": [
+        "Does not navigate to docs, www, hosted login or other hosts merely because katla.app links to them",
+        "Removes the docs consent failure and off-host cookies from katla.app results",
+        "Does not put localStorage identifiers in the cookie inventory",
+        "Counts two observed cookies with zero pre-consent cookies",
+        "Retains the embedded consent API request as evidence attributable to katla.app",
+        "Does not mark the audit incomplete solely because docs and login were excluded"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Use fixed evidence only to plan an audit of https://example.com. The homepage offers /about, //docs.example.com, https://www.example.com and a privacy notice hosted only at https://legal.example.net/privacy. The /login route unexpectedly redirects to a different host; the browser cannot intercept navigation. After the tester returned from that host, the jar contained an analytics cookie for .example.com, with no request capture establishing who set it. The applicable disclosure check requires the actual privacy notice. Which destinations and observations can be used, how should the session be handled, and how should coverage be reported? Also state what to do if the initial example.com URL itself redirects to www.example.com.",
+      "expected_output": "Follow /about only among these links; stop the unexpected redirected scenario, discard its state and retest clean on-host. Do not attribute the parent-domain cookie without provenance. External notice is a limitation with the applicable disclosure check untested. An entry redirect does not authorize replacing the requested host.",
+      "files": [],
+      "assertions": [
+        "Uses parsed hostname equality and rejects protocol-relative subdomain and www destinations",
+        "Does not fetch the off-host privacy notice as part of the audit",
+        "Discards the contaminated scenario state and proposes a new clean on-host session",
+        "Does not treat the .example.com cookie domain as proof of in-scope origin or pre-consent timing",
+        "Marks the blocked disclosure check untested and the assessment incomplete without a confirmed violation",
+        "Reports the initial off-host redirect as a coverage limitation rather than silently auditing www"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review fixed audit evidence for https://www.example.com only. All captures are from verified clean sessions on that host. Before a choice, an embedded third-party frame sets one optional analytics cookie for metrics.example.net and writes one localStorage identifier. The applicable prior-consent requirement is established, and the behavior repeats. A separate session observes two first-party analytics cookies only after acceptance. A link points to the apex example.com. Explain the cookie inventory, pre-consent count, supported finding, and navigation boundary. Do not browse.",
+      "expected_output": "Three cookies total, one pre-consent cookie; localStorage is separate supporting evidence. The reproduced embedded tracking supports a confirmed material failure on www.example.com despite the cookie domain differing. The apex remains outside this host's audit.",
+      "files": [],
+      "assertions": [
+        "Retains attributable embedded third-party cookies despite their different domain",
+        "Counts three cookies total and one pre-consent cookie",
+        "Keeps the localStorage identifier out of cookie totals",
+        "Reports the verified pre-consent bypass as critical",
+        "Does not navigate from www.example.com to the apex example.com"
+      ]
     }
   ]
 }
