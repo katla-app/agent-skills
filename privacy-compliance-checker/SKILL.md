@@ -113,6 +113,11 @@ Keep the pre-consent jar — Step 3 and Step 7 both compare against it.
 
 Read `references/gdpr-checklist.md` for the full GDPR checklist.
 
+Each item you verify here becomes one `consentMechanism.checks[]` row, and **every row carries a
+`fix` tag** — `cmp` for nearly all of them, since these are the banner's own behaviour. Tag them
+as you record them rather than going back at Step 8; the publish script refuses a document with
+untagged rows, and the reason is in Step 8.
+
 If a cookie banner is present, verify:
 
 - [ ] Banner appears before any non-essential cookies are set
@@ -558,6 +563,13 @@ node scripts/publish-report.mjs findings.json
 
 That prints the link, opens it in a browser, and says when it expires. Pass `--no-open` on a
 headless machine. `KATLA_API_URL` overrides the endpoint for local development.
+
+**It refuses a document with untagged rows** and names which array is short. That is deliberate:
+the published report's filter is built from `fix`, and a report tagged on its findings alone
+renders "All 1 · CMP 0 · Site 1 · Legal 0" — four controls, three empty, none of which does
+anything — which reads as a broken page rather than as a thin audit. Tag the rows and publish
+again. `--allow-untagged` exists for the genuine case of a row with no owner; reach for it only
+after deciding that is what you have.
 
 **What gets uploaded is the findings document — never a rendered file.** Katla renders the
 report itself from the data. That is not a detail, it is the reason the flow is shaped this way:

@@ -102,7 +102,7 @@ One row per regime **in scope** — never pad it with regimes you did not audit.
 | `scope` | Territory shown after the requirement — `EU / EEA`, `Thailand` … |
 | `check` | The requirement tested, one line |
 | `verdict` | `pass` \| `review` \| `fail` \| `readiness` \| `na` |
-| `fix` | `cmp` \| `site` \| `legal` — optional, who would apply the work. Same test as on a finding |
+| `fix` | `cmp` \| `site` \| `legal` — **required**, who would apply the work. Same test as on a finding. `publish-report.mjs` refuses a document missing it |
 
 Use `readiness` for obligations not yet in force — India's DPDP in particular. It renders in
 brand purple as **Readiness**, never as a red failure. See the skill's Important Notes.

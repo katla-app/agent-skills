@@ -31,11 +31,13 @@ const die = (msg) => {
 const argv = process.argv.slice(2);
 let input = null;
 let shouldOpen = true;
+let allowUntagged = false;
 
 for (const a of argv) {
   if (a === '--no-open') shouldOpen = false;
+  else if (a === '--allow-untagged') allowUntagged = true;
   else if (a === '-h' || a === '--help') {
-    console.log('usage: publish-report.mjs <findings.json> [--no-open]');
+    console.log('usage: publish-report.mjs <findings.json> [--no-open] [--allow-untagged]');
     process.exit(0);
   } else if (a.startsWith('-')) die(`unknown flag ${a}`);
   else input = a;
@@ -48,6 +50,42 @@ try {
   findings = JSON.parse(readFileSync(resolve(input), 'utf8'));
 } catch (e) {
   die(`could not read findings at ${input}: ${e.message}`);
+}
+
+/*
+ * Every row that can be tagged, must be.
+ *
+ * The published report lets a reader narrow the whole page to the queue they own, and it can
+ * only do that from `fix`. A document tagged on its findings alone renders a filter reading
+ * "All 1 · CMP 0 · Site 1 · Legal 0" — four controls, three empty, none of which changes
+ * anything — and the reader concludes the page is broken rather than that the audit was thin.
+ *
+ * This is a refusal rather than a warning because the instruction to tag has been in SKILL.md
+ * and the schema for a while and reports still arrive untagged; a warning printed above a
+ * successful upload is a warning nobody reads. The escape hatch exists for the case the check
+ * cannot judge: a row that genuinely has no owner.
+ */
+function untagged(rows, label) {
+  const bad = (rows ?? []).filter((r) => !['cmp', 'site', 'legal'].includes(r?.fix));
+  return bad.length ? [`${bad.length} of ${rows.length} ${label}`] : [];
+}
+
+if (!allowUntagged) {
+  const missing = [
+    ...untagged(findings.consentMechanism?.checks, 'consentMechanism.checks[]'),
+    ...untagged(findings.jurisdictions, 'jurisdictions[]'),
+    ...untagged(findings.findings, 'findings[]'),
+  ];
+  if (missing.length) {
+    console.error('publish-report: every row needs a "fix" tag before this can be published.\n');
+    for (const m of missing) console.error(`  missing: ${m}`);
+    console.error('\n  fix is "cmp" | "site" | "legal" — where the work lands if the row is not');
+    console.error('  passing. Tag the passing rows too: an untagged row can never match the');
+    console.error('  report\'s filter, so it reads as "not mine" rather than "nobody said".');
+    console.error('  See "What belongs in consentMechanism.checks[]" in SKILL.md.\n');
+    console.error('  Publishing a deliberately untagged report: --allow-untagged');
+    process.exit(1);
+  }
 }
 
 /* Opening a browser is a convenience, not the deliverable — the link is printed either way,
