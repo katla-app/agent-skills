@@ -88,11 +88,24 @@ if (!response.ok) {
   die(`upload refused: ${detail}`);
 }
 
-const { url, expiresAt } = await response.json();
+const { uid, url, expiresAt, editKey } = await response.json();
 const days = Math.max(0, Math.round((new Date(expiresAt) - Date.now()) / 86_400_000));
 
 console.log(`✓ ${url}`);
 console.log(`  Kept for ${days} days, then deleted. Anyone with the link can read it.`);
 console.log('  Open it and print to PDF (A4, no margins, background graphics on) for a file.');
+
+/* The key is printed once and never retrievable again — the server keeps only its hash. It is
+   scoped to this one report and dies with it in seven days, so it is worth far less than it
+   looks; it is still a credential, and it is on stdout because the caller has nowhere else to
+   put it. Keep it in the session, not in a file somebody might commit. */
+if (editKey) {
+  console.log('');
+  console.log(`  uid:      ${uid}`);
+  console.log(`  edit key: ${editKey}`);
+  console.log('  Shown once. Keep it to revise or retract this report:');
+  console.log(`    node scripts/revise-report.mjs  ${uid} findings.json --key ${editKey}`);
+  console.log(`    node scripts/retract-report.mjs ${uid} --key ${editKey}`);
+}
 
 if (shouldOpen) openInBrowser(url);

@@ -538,6 +538,59 @@ as PDF" is the browser's print dialog and matches the local file exactly.
 The upload is rate limited per address and capped at 256 KB. A heavy nine-page audit is around
 30 KB, so a refusal means something is wrong with the document rather than with the limit.
 
+### Keep the edit key
+
+Publishing prints a **uid** and an **edit key**:
+
+```
+✓ https://katla.app/reports/EQwu2BvPJw-kFfjF7To5UpWP
+
+  uid:      EQwu2BvPJw-kFfjF7To5UpWP
+  edit key: V1StGXR8_Z5jdHi6B-myT7mC9kL2pQwe
+```
+
+**Hold both for the rest of the session.** The key is shown once and is not retrievable — Katla
+stores only its hash — so if it scrolls out of your context, that report can no longer be
+revised or retracted by anyone. Repeat it back in your summary to the user so it survives in the
+transcript, and tell them it is worth keeping if they might want the report taken down later.
+
+Treat it as a credential, but a small one: it authorises exactly one report, it grants nothing
+beyond revising and retracting that report, it cannot read anything the link does not already
+expose, and it dies with the report in seven days. Do not write it to a file in the user's
+repository, where it would get committed.
+
+### Revising a report
+
+An audit is iterative — a finding gets disputed, a fix lands mid-session, a number turns out to
+be wrong. The report has usually been sent to someone by then, and publishing a corrected copy
+at a second URL does not help: the first link is the one they hold. Rewrite that one instead.
+
+```bash
+node scripts/revise-report.mjs <uid> findings.json --key <edit key>
+```
+
+Re-run the audit, write the new `findings.json`, then revise. The link does not change, so
+nobody needs to be told a second URL. The expiry does not move either — retention is a promise
+to the company that was audited, not to whoever published the report, and a report that could
+be kept alive by editing it would make the seven days meaningless.
+
+Prefer revising over republishing whenever the user has already been given a link.
+
+### Retracting a report
+
+```bash
+node scripts/retract-report.mjs <uid> --key <edit key>
+```
+
+For a report published in error, superseded, or that the user simply no longer wants standing.
+The row goes with it. Offer this whenever a user expresses second thoughts about a report being
+live — it names a real company's compliance failures, and waiting out the week is not the only
+option available to them.
+
+Both scripts accept the full URL in place of the uid, and read `KATLA_REPORT_KEY` if you would
+rather not put the key on the command line. Both answer the same way when a key is wrong as when
+a report is gone: Katla will not confirm that a uid exists to someone who cannot open it.
+
 ### Publishing without Katla
 
 Where Katla is not the destination — a white-labelled audit, an air-gapped run — render the
