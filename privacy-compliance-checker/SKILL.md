@@ -124,6 +124,109 @@ If a cookie banner is present, verify:
 - [ ] Closing the banner does NOT equal consent
 - [ ] Consent can be withdrawn as easily as it was given
 
+#### Grading a Consent Mode pre-consent ping
+
+Google Consent Mode v2 in a denied state still sends a cookieless ping — `/g/collect` for GA4,
+`/ccm/s/collect` or `/ccm/collect` for Ads. It writes no cookie, and it is not a bug: modelling
+is what those pings are for. Sites that wire Consent Mode correctly will always show this, so
+grade it the same way every time or the same behaviour comes out critical on one audit and
+absent from the next.
+
+**Check what the ping actually carries** before describing it:
+
+```javascript
+(() => {
+  const u = performance.getEntriesByType('resource').map((r) => r.name)
+    .find((n) => /g\/collect|ccm\/s?\/?collect/.test(n));
+  if (!u) return { none: true };
+  const q = new URL(u).searchParams;
+  return Object.fromEntries(
+    ['gcs', 'gcd', 'npa', 'dma', 'dl', 'dr', 'cid', 'uid'].filter((k) => q.has(k))
+      .map((k) => [k, q.get(k)])
+  );
+})()
+```
+
+`gcs=G100` means both storage types denied and is what a correct implementation looks like;
+`gcs=G1—` or `G111` while the visitor has refused is a real failure, not a modelling ping.
+Note `cid` if present: a session-scoped client identifier travels in the ping even with no
+cookie, so "it only sends the IP and the URL" is not accurate.
+
+**Severity: `warning`, not `critical`** — when, and only when, all of these hold:
+
+- a `consent default` with the relevant storage types denied is declared **before** the tags fire
+- `gcs` shows denied and `npa=1`
+- no cookie or storage entry is written (verify against the jar, not by assuming)
+
+Any of those missing makes it a real violation, graded on its own terms.
+
+**Cite the right thing.** ePrivacy Art 5(3) governs storing or accessing information on terminal
+equipment, and a ping that stores nothing sits at the edge of it — EDPB Guidelines 02/2023 on the
+technical scope of Art 5(3) read "gaining access" broadly enough to arguably cover it, which is
+exactly why it is a weak place to plant a critical finding. The firmer ground is GDPR Art 6: the
+transmission carries an IP address, which is personal data (CJEU C-582/14 *Breyer*), so it needs
+a legal basis. Google's position is legitimate interest; several supervisory authorities are
+unconvinced and the EDPB has not endorsed it. Report it as a contested transfer needing a
+documented basis, not as a settled breach.
+
+**Never write "this is how Consent Mode works" as though it answered the question.** How a vendor
+designed a feature is not a legal basis. It explains the behaviour; it does not justify it.
+
+#### Proving there is no persistent withdrawal control
+
+This is the finding most often disputed, and the dispute is usually right — the control is a
+small floating launcher an agent did not recognise. Never report it missing on a `querySelector`
+that returned null. Three specific traps:
+
+1. **`offsetParent` is `null` for `position: fixed` elements.** A visibility check built on it
+   reports every floating consent launcher as hidden. Use `getBoundingClientRect()` plus
+   `getComputedStyle` instead. This one has produced a wrong finding in practice.
+2. **The launcher is often not the CMP's documented selector.** Sites restyle it, wrap it, or
+   trigger the CMP from their own button.
+3. **It may render late**, after consent resolves — so a check that runs on load sees nothing.
+
+Sweep for the shape rather than the selector, after a real wait:
+
+```javascript
+(() => {
+  const shown = (el) => {
+    const r = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    return r.width > 0 && r.height > 0 && cs.display !== 'none' &&
+           cs.visibility !== 'hidden' && cs.opacity !== '0';
+  };
+  // Any small fixed-position element is a candidate launcher — 48px circular icons included.
+  const launchers = Array.from(document.querySelectorAll('body *')).filter((el) => {
+    if (getComputedStyle(el).position !== 'fixed' || !shown(el)) return false;
+    const r = el.getBoundingClientRect();
+    return r.width <= 90 && r.height <= 90;
+  });
+  // Plus the documented triggers a site may wire into its own footer link.
+  const triggers = document.querySelectorAll(
+    '[data-katla-consent-open], .ot-sdk-show-settings, #ot-sdk-btn, .ot-floating-button, ' +
+    '#CookiebotWidget, .cky-banner-revisit, #cookiescript_badge, .termly-display-preferences'
+  );
+  return {
+    smallFixedElements: launchers.map((el) => ({
+      tag: el.tagName, id: el.id || null, cls: String(el.className).slice(0, 60),
+    })),
+    documentedTriggers: triggers.length,
+    textualEntryPoints: Array.from(document.querySelectorAll('a,button'))
+      .filter((el) => /cookie|samtycke|consent|integritet|inställning/i.test(el.textContent || ''))
+      .map((el) => (el.textContent || '').trim().slice(0, 40)),
+  };
+})()
+```
+
+**Then click it.** A control that exists but does not reopen the preference centre is not a
+withdrawal mechanism, and a control that opens it is not a finding. Only after the sweep comes
+back empty *and* no textual entry point works may the report say no persistent control exists —
+and the evidence line should name what was searched for, not just what was not found.
+
+A launcher that exists but is reachable only from the cookie policy page is still a finding,
+just a different one: withdrawal is harder than granting. Say which of the two you mean.
+
+
 Test the reject flow. Clicking reject once is not enough — cookies already set stay set, so a
 jar read straight after the click tells you nothing about enforcement. Empty the jar, then reload:
 
