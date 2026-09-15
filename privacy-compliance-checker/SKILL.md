@@ -746,6 +746,11 @@ covers the other two produces a wrong report.
 
 ### Choosing between `cmp`, `site` and `legal`
 
+Tag **every finding, every consent check and every jurisdiction row** — passing ones included.
+The published report lets a reader narrow the whole page to the queue they own, and an untagged
+row silently drops out of every narrowed view: a platform engineer filtering to `cmp` would read
+it as "this does not concern me" rather than "nobody said". Three fields, one vocabulary.
+
 The test is **where the fix is applied**, not who is inconvenienced by it.
 
 - `cmp` — the change lands in the consent layer: a console setting, an SDK prop, the generated

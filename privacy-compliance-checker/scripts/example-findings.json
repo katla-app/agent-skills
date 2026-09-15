@@ -19,27 +19,32 @@
       {
         "label": "Banner before non-essential cookies",
         "value": "No",
-        "status": "fail"
+        "status": "fail",
+        "fix": "cmp"
       },
       {
         "label": "Reject as easy as accept",
         "value": "Yes",
-        "status": "pass"
+        "status": "pass",
+        "fix": "cmp"
       },
       {
         "label": "Granular categories offered",
         "value": "Yes",
-        "status": "pass"
+        "status": "pass",
+        "fix": "cmp"
       },
       {
         "label": "No pre-ticked categories",
         "value": "Yes",
-        "status": "pass"
+        "status": "pass",
+        "fix": "cmp"
       },
       {
         "label": "GPC signal honoured",
         "value": "No",
-        "status": "fail"
+        "status": "fail",
+        "fix": "cmp"
       }
     ]
   },
@@ -176,49 +181,56 @@
       "law": "GDPR",
       "scope": "EU / EEA",
       "check": "Prior consent, granular categories, withdrawal as easy as consent",
-      "verdict": "fail"
+      "verdict": "fail",
+      "fix": "cmp"
     },
     {
       "code": "US-CA",
       "law": "CCPA",
       "scope": "California",
       "check": "\"Do Not Sell or Share\" link shown, GPC signal honoured",
-      "verdict": "fail"
+      "verdict": "fail",
+      "fix": "site"
     },
     {
       "code": "EU",
       "law": "DMA",
       "scope": "Gatekeepers",
       "check": "Reject visually equal to accept before Google tags fire",
-      "verdict": "pass"
+      "verdict": "pass",
+      "fix": "cmp"
     },
     {
       "code": "JP",
       "law": "APPI",
       "scope": "Japan",
       "check": "Third-party transfer disclosure names recipient and destination",
-      "verdict": "review"
+      "verdict": "review",
+      "fix": "legal"
     },
     {
       "code": "TH",
       "law": "PDPA",
       "scope": "Thailand",
       "check": "Purpose notice before collection, local representative named",
-      "verdict": "fail"
+      "verdict": "fail",
+      "fix": "legal"
     },
     {
       "code": "SG",
       "law": "PDPA",
       "scope": "Singapore",
       "check": "Notice content and published DPO contact",
-      "verdict": "pass"
+      "verdict": "pass",
+      "fix": "legal"
     },
     {
       "code": "IN",
       "law": "DPDP",
       "scope": "India",
       "check": "Itemised purposes, withdrawal, notice languages",
-      "verdict": "readiness"
+      "verdict": "readiness",
+      "fix": "legal"
     }
   ],
   "findings": [

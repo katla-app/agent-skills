@@ -71,12 +71,18 @@ honestly and the report gets the alarm level right by itself.
 {
   "bannerPresent": true,
   "checks": [                         // first 4 reach page one; order them by importance
-    { "label": "Reject as easy as accept", "value": "Yes", "status": "pass" }
+    { "label": "Reject as easy as accept", "value": "Yes", "status": "pass", "fix": "cmp" }
   ]
 }
 ```
 
 `status` is `pass` | `fail` | `warn` | `na` | `info` and drives only the colour.
+
+`fix` is optional and means the same thing it means on a finding: where the work lands if this
+check is not passing. Tag every check, passing ones included — the web report lets a reader
+filter the whole page down to the queue they own, and a check that drops out of the filter
+because nobody tagged it looks like a check that does not apply to them. Omit it only when the
+check genuinely has no owner.
 
 ## `jurisdictions[]`
 
@@ -89,6 +95,7 @@ One row per regime **in scope** — never pad it with regimes you did not audit.
 | `scope` | Territory shown after the requirement — `EU / EEA`, `Thailand` … |
 | `check` | The requirement tested, one line |
 | `verdict` | `pass` \| `review` \| `fail` \| `readiness` \| `na` |
+| `fix` | `cmp` \| `site` \| `legal` — optional, who would apply the work. Same test as on a finding |
 
 Use `readiness` for obligations not yet in force — India's DPDP in particular. It renders in
 brand purple as **Readiness**, never as a red failure. See the skill's Important Notes.
@@ -110,6 +117,12 @@ The first 7 rows appear on page one; the appendix always carries the full table.
 Findings are sorted critical → warning → readiness; the top three reach page one.
 
 ### `fix` — who applies it
+
+Findings carry it, and so do `consentMechanism.checks[]` and `jurisdictions[]`. One vocabulary
+across all three, because the reader filters across all three: a platform engineer narrowing the
+report to `cmp` should see the consent checks and the regulation rows that are theirs, not only
+the findings. An untagged row is not an error — it simply never matches a narrowed filter, which
+is why tagging the passing ones matters as much as the failing ones.
 
 `fix` drives the **Getting compliant** split, which is omitted entirely when `status` is
 `compliant`. It answers one question: whose queue does this land in?
