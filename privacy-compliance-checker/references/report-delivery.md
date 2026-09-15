@@ -29,16 +29,26 @@ logo, pills and footer, and pass `--brand path/to/brand.json`.
 
 ### Delivering it as a link
 
-A PDF has to be attached to something. A link can be opened on a phone, forwarded to a DPO, and
-read without a file manager — so when the user requests a shareable link or publication, publish the report and give them the URL.
-Otherwise deliver the local report.
+Always render and check the local report first. Show the user its path and a short outcome,
+then ask: "Would you like me to publish this report as a shareable link on Katla? It will be
+available for seven days." Ask this final publication question even if the initial audit request
+mentioned a shareable link or publication. Upload only after an explicit affirmative answer for
+this completed report. A declined offer means local delivery only; no answer leaves publication
+pending and does not authorize an upload. Do not repeat the question once it has been answered
+for this report. This choice is required for every newly completed report.
+
+After the user accepts, publish and give them the URL:
 
 ```bash
 node scripts/publish-report.mjs findings.json
 ```
 
-That prints the link, opens it in a browser, and says when it expires. Pass `--no-open` on a
-headless machine. `KATLA_API_URL` overrides the endpoint for local development.
+The publisher prints the link, then attempts to open that exact URL in the user's default
+browser, and reports when it expires. Opening is best effort: a headless, sandboxed or
+desktop-less environment may not have a browser, and a failed open must not turn a successful
+publication into a failure. If the publisher cannot open it, give the user the URL so they can
+open it themselves. Pass `--no-open` only when the user requests no browser launch or the
+environment is known to be headless. `KATLA_API_URL` overrides the endpoint for local development.
 
 **It refuses a document with untagged rows** and names which array is short. That is deliberate:
 the published report's filter is built from `fix`, and a report tagged on its findings alone
@@ -122,7 +132,9 @@ a report is gone: Katla will not confirm that a uid exists to someone who cannot
 ### Publishing without Katla
 
 Where Katla is not the destination — a white-labelled audit, an air-gapped run — render the
-report as Artifact content instead and publish that file with the Artifact tool:
+report as Artifact content instead. The same publication choice applies: identify the actual
+hosting destination and retention terms, and wait for the user's affirmative answer before
+publishing that file with the Artifact tool. Local rendering does not require publication:
 
 ```bash
 node scripts/render-report.mjs findings.json --artifact -o report.artifact.html

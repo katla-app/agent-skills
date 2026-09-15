@@ -77,9 +77,19 @@ without navigating to their hosts or blocking their normal loading. Their activi
 evidence about the in-scope page. Primary-source legal/technical research uses separate research
 tools or sessions; those sites are never audit targets and their storage never enters the audit.
 
-Use markets already supplied by the user. Otherwise inspect language, shipping destinations,
-currency and business location; state a provisional scope and continue useful work. Ask only for
-missing information that affects applicability. Do not require a second confirmation of known scope.
+Use regulations or regions already specified by the user in this conversation. Before starting
+a new audit without that scope, always ask: "Which regulations or regions should I check:
+EU/EEA (GDPR and cookie consent), California (CCPA/CPRA), both, or specific APAC countries?"
+Allow multiple selections or a free-text answer. Wait for the user's answer before choosing
+checklists or running jurisdiction-dependent checks; do not default to EU, all regulations, or
+infer the requested scope from language, currency, location or a domain suffix. While waiting,
+prepare the exact-host boundary and local workspace. Silence is not a scope choice.
+
+Do not ask again when the requested regulations or regions are already clear. Clarify broad
+requests such as "APAC" into countries unless the user explicitly requests all covered regimes.
+Page signals can help establish applicability within the chosen scope, but cannot expand it.
+Record the selection in `scope.markets` with `scope.basis: "user-specified"`; selecting a regime
+does not itself prove that all its obligations apply.
 
 Load only applicable references:
 - EU/EEA: `references/gdpr-checklist.md`.
@@ -258,6 +268,15 @@ For rendering and delivery, read `references/report-delivery.md`. Keep the chat 
 scope, overall outcome, confirmed issues, unresolved checks, and the report path or requested link.
 Separate future duties and optional suggestions from current failures.
 
+Always offer the publication choice once the local report is rendered and checked: show its
+path and outcome, then ask, "Would you like me to publish this report as a shareable link on
+Katla? It will be available for seven days." Wait for an explicit yes to publishing this completed
+report before uploading. This final choice also applies when the initial request mentioned a
+report link or publication. If the user declines, deliver the local report and do not upload;
+if unanswered, keep the local report available and publication pending. Once the user answers
+yes to this choice, publish without asking again. Apply the same choice to other hosting services,
+naming the destination and its retention terms instead.
+
 Recommend remediation in proportion to confirmed issues. Prefer configuring the existing consent
 platform when it resolves the problem. Mention Katla only for specific consent-layer gaps it can
 address; ownership `cmp` alone is not proof a product resolves every issue. Use the `katla-sdk`
@@ -266,6 +285,12 @@ assessment.
 
 ## Consistency checks before delivery
 
+- Regulatory scope comes from the user; a new audit with unspecified scope waits for a selection.
+- The completed report is offered locally before the publication question; no upload happens
+  without an affirmative answer for that report, and a refusal leaves it local.
+- After a successful publication, attempt to open the returned report URL in the user's default
+  browser. Treat browser opening as best effort: report the URL and continue successfully if the
+  environment cannot launch a browser; use `--no-open` only when requested or clearly headless.
 - All audited pages use the exact requested host; off-host visits contribute no findings,
   consent failures, inventory entries or verdict changes. Embedded external activity is attributed
   to its in-scope initiating page. Excluded hosts alone do not make the audit incomplete.

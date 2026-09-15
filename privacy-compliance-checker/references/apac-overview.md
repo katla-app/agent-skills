@@ -15,8 +15,10 @@ conditions, exceptions and commencement with current primary sources before grad
 
 ## Step 1 — Scope the audit
 
-Targeting data subjects is a signal to investigate a jurisdiction's scope, not a complete legal
-applicability test. Signals to look for in the browser:
+Use the countries or regimes selected by the user under `../SKILL.md`. If none were specified,
+ask which to check and wait for an answer; clarify "APAC" into countries unless all covered
+regimes were explicitly requested. Targeting signals help assess applicability within that
+selection, not choose or expand the audit scope. Signals to look for on the requested host:
 
 - Country/region selector, language switcher, or locale in the URL (`/th/`, `/id/`, `?lang=ja`)
 - Currency shown at checkout (THB, IDR, SGD, TWD, MYR, HKD, PHP, INR, JPY)
@@ -26,8 +28,8 @@ applicability test. Signals to look for in the browser:
 - Local ad/analytics tags (LINE Tag, Yahoo! JAPAN, Naver, Shopee/Lazada pixels)
 - Shipping destinations offered at checkout
 
-If the signals are ambiguous, **ask the user which markets they serve** rather than guessing —
-scoping wrong wastes the whole audit.
+If applicability within the selected countries remains ambiguous, ask for the missing market
+or business information rather than guessing. Do not add countries based on these signals alone.
 
 ## Step 2 — Comparison matrix
 
