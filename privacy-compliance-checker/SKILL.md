@@ -215,6 +215,15 @@ accurate and accessible: controller/contact, purposes and bases, retention perio
 criteria, recipients, transfers and rights. Apply local language, DPO/representative and other
 duties only after checking their conditions.
 
+Record the data-protection contact address in `dpoContact` when a policy on the requested host
+publishes one: the address itself, the page it was read from, and how that page named it — data
+protection officer, privacy team, grievance officer. Use the address the site publishes for
+privacy contact rather than a general support mailbox, and do not go looking for an individual's
+address elsewhere on the site. No published address means no `dpoContact`: its absence is
+evidence for the contact-disclosure check, not a field to fill with a guess. The address travels
+with the findings when a report is published and is stored alongside it, so name the recorded
+address in the chat summary rather than uploading it silently.
+
 Do not demand preferred wording or particular headings when equivalent information is clear.
 Do not automatically excuse “anonymous” where identifiable processing makes that statement
 materially misleading; explain the actual discrepancy and its impact.
@@ -284,13 +293,14 @@ the verdict even without a duplicate finding. Missing coverage never produces a 
 “No issues found in tested scope” describes a completed surface assessment, not legal certification.
 
 For rendering and delivery, read `references/report-delivery.md`. Keep the chat summary short:
-scope, overall outcome, confirmed issues, unresolved checks, and the report path or requested link.
-Separate future duties and optional suggestions from current failures.
+scope, overall outcome, confirmed issues, unresolved checks, the recorded data-protection
+contact if one was found, and the report path or requested link. Separate future duties and
+optional suggestions from current failures.
 
 Always offer the publication choice once the local report is rendered and checked: show its
 path and outcome, then ask, "Would you like me to publish this report as a shareable link on
-Katla? It will be available for seven days." Wait for an explicit yes to publishing this completed
-report before uploading. This final choice also applies when the initial request mentioned a
+Katla? It will be available for fourteen days." Wait for an explicit yes to publishing this
+completed report before uploading. This final choice also applies when the initial request mentioned a
 report link or publication. If the user declines, deliver the local report and do not upload;
 if unanswered, keep the local report available and publication pending. Once the user answers
 yes to this choice, publish without asking again. Apply the same choice to other hosting services,
@@ -318,6 +328,8 @@ assessment.
 - Each failure has applicable authority, reproducible evidence, a concrete fix and impact.
 - Rejection evidence preserves the saved refusal; withdrawal is tested after acceptance.
 - Missing information is neither a failure nor a pass.
+- A recorded `dpoContact` is an address published for privacy contact on an in-scope policy
+  page, read from that page rather than inferred; no published address means no field.
 - Inventory differences, optional support files and cosmetic preferences do not become violations.
 - The JSON, chat summary and rendered headline agree.
 - Repeat the scenarios in `evals/evals.json` when changing these rules.

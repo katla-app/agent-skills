@@ -11,7 +11,7 @@
  * Sending data instead of markup also means nothing from an audit is ever served as HTML from
  * a domain that holds somebody's session.
  *
- * Reports are kept for seven days and then deleted.
+ * Reports are kept for fourteen days and then deleted.
  *
  * Zero dependencies. Node 18+.
  */
@@ -134,7 +134,7 @@ console.log(`  Kept for ${days} days, then deleted. Anyone with the link can rea
 console.log('  Open it and print to PDF (A4, no margins, background graphics on) for a file.');
 
 /* The key is printed once and never retrievable again — the server keeps only its hash. It is
-   scoped to this one report and dies with it in seven days, so it is worth far less than it
+   scoped to this one report and dies with it in fourteen days, so it is worth far less than it
    looks; it is still a credential, and it is on stdout because the caller has nowhere else to
    put it. Keep it in the session, not in a file somebody might commit. */
 if (editKey) {

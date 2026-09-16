@@ -26,6 +26,7 @@ node scripts/render-report.mjs findings.json -o report.html
 | `status` | string | no | Legacy input, ignored; derived from outcomes and coverage to prevent contradictory overrides |
 | `assessment` | object | yes for new reports | `{ complete: boolean, pages: string[], region: string, conditions: string, limitations: string[] }` |
 | `scope` | object | recommended | `{ markets: string[], basis: string }` |
+| `dpoContact` | object | no | The data-protection contact published on an in-scope policy page. See below |
 | `consentMechanism` | object | recommended | See below |
 | `cookies` | array | recommended | See below |
 | `thirdParties` | array | no | See below |
@@ -70,6 +71,31 @@ destinations in `assessment.limitations`, not as audited pages or failed consent
 aggregate separate hosts into one report. Excluding another host does not itself make coverage
 incomplete; an applicable check blocked by an off-host-only notice or redirect remains untested.
 Findings, consent checks, jurisdiction verdicts and inventory totals must all use this same scope.
+
+## `dpoContact`
+
+The address the audited site publishes for privacy contact, when a policy on the requested host
+gives one. Read from the page, never inferred from a pattern like `dpo@<domain>`.
+
+| Field | Type | Notes |
+|---|---|---|
+| `email` | string | The published address, as written on the page |
+| `source` | string | The in-scope page it was read from — a policy URL on the requested host |
+| `label` | string | How that page named it: `Data Protection Officer`, `Privacy team`, `Grievance Officer` |
+
+```jsonc
+{ "email": "dpo@shop.example.com", "source": "https://shop.example.com/privacy", "label": "Data Protection Officer" }
+```
+
+Omit the object when no policy on the requested host publishes an address. A missing contact is
+evidence for the disclosure checks that require one — record that as a finding or a verification
+item, not as an invented address. A general support or sales mailbox is not this field; if the
+site publishes only that, say so in the relevant check rather than promoting it to a DPO contact.
+
+`email` is the only field Katla lifts out of the document: publishing stores it in a column
+beside the report so a reader can reach the contact without opening the findings, and it is
+deleted when the report expires, along with everything else about the audit. The rendered report
+does not print it — the person it names is usually the person the report was written for.
 
 ## `cookies[]`
 

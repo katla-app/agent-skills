@@ -104,7 +104,7 @@
     },
     {
       "id": 9,
-      "prompt": "A checked local privacy report has been shown to the user, along with the question 'Would you like me to publish this report as a shareable link on Katla? It will be available for seven days.' Explain the next action in three independent cases: A, the user says 'No, keep it local'; B, there is no answer; C, the user says 'Yes, publish it.' Also explain whether switching to another artifact host permits skipping this choice. Do not execute any upload.",
+      "prompt": "A checked local privacy report has been shown to the user, along with the question 'Would you like me to publish this report as a shareable link on Katla? It will be available for fourteen days.' Explain the next action in three independent cases: A, the user says 'No, keep it local'; B, there is no answer; C, the user says 'Yes, publish it.' Also explain whether switching to another artifact host permits skipping this choice. Do not execute any upload.",
       "expected_output": "A delivers only the local report; B leaves publication pending with the local report available; C publishes once without another permission question. Other hosts require the same informed publication choice naming the destination and retention terms.",
       "files": [],
       "assertions": [
@@ -125,6 +125,18 @@
         "Treats headless or launch failure as a non-fatal fallback",
         "Gives the user the URL even if opening fails",
         "Does not republish because browser launch failed"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Fixed evidence from an in-scope EU audit of https://shop.example.com. The privacy policy at https://shop.example.com/privacy names a data protection officer reachable at dpo@shop.example.com; the footer also shows support@shop.example.com for orders, and an off-host partner page lists privacy@vendor.example. Record what the findings document should carry for the data-protection contact, and say what you would record instead had the policy named no address. Do not run tools.",
+      "expected_output": "dpoContact with email dpo@shop.example.com, source https://shop.example.com/privacy and a label naming it as the DPO; the support mailbox and the off-host address are not it. With no published address, no dpoContact — the absence is recorded against the contact-disclosure check.",
+      "files": [],
+      "assertions": [
+        "Records the address published for privacy contact, not the general support mailbox",
+        "Keeps the source on the requested host and ignores the off-host address",
+        "Omits dpoContact entirely when no address is published rather than inventing one",
+        "Treats a missing contact as evidence for the disclosure check, not as a filled field"
       ]
     }
   ]

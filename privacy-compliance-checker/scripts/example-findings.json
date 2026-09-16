@@ -13,6 +13,11 @@
     ],
     "basis": "user-stated"
   },
+  "dpoContact": {
+    "email": "dpo@shop.example.com",
+    "source": "https://shop.example.com/privacy",
+    "label": "Data Protection Officer"
+  },
   "consentMechanism": {
     "bannerPresent": true,
     "checks": [
