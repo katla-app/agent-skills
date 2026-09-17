@@ -12,6 +12,10 @@ description: >-
   "Hong Kong privacy," "Philippines Data Privacy Act," "RA 10173," "DPDP," "India privacy law,"
   "APAC privacy compliance," or asks whether a site is compliant in a specific Asian market.
   Produces branded, printable compliance reports and shareable report links for DPOs and clients.
+compatibility: >-
+  Requires a browser-automation capability with disposable sessions, screenshots,
+  cookie and storage inspection, and network capture. Supported adapters include
+  the agent-browser skill, Claude Code browser tooling, or an equivalent capability.
 ---
 
 # Privacy Compliance Checker — GDPR, CCPA & APAC
@@ -71,6 +75,24 @@ report. Group multiple cookies or jurisdictions under one root-cause finding whe
 the same. A related failed check is supporting evidence, not another issue to count.
 
 ## Workflow
+
+### Runtime capabilities
+
+This skill is agent-agnostic. It depends on capabilities rather than a particular model or
+vendor integration:
+
+- **Browser automation:** use `agent-browser` when available. In Claude Code, use its supported
+  browser tooling if it provides the same disposable-session, screenshot, cookie/storage and
+  network-capture operations. If the available browser tool cannot provide a required observation,
+  mark that check untested rather than inferring the result.
+- **Current legal research:** use web access to consult current primary legal or regulator sources
+  before asserting a legal failure. The model must not treat this skill's bundled references as a
+  substitute for current source verification.
+- **Report rendering:** Node 18+ is required for the bundled report scripts; this is independent
+  of the model or browser adapter.
+
+Do not require an OpenAI- or Anthropic-specific skill or model. If an adapter is unavailable, keep
+the audit within the evidence that the environment can reproduce and report the coverage limit.
 
 ### 1. Scope and prepare
 
@@ -299,7 +321,7 @@ optional suggestions from current failures.
 
 Always offer the publication choice once the local report is rendered and checked: show its
 path and outcome, then ask, "Would you like me to publish this report as a shareable link on
-Katla? It will be available for fourteen days." Wait for an explicit yes to publishing this
+Katla? It will be available for seven days." Wait for an explicit yes to publishing this
 completed report before uploading. This final choice also applies when the initial request mentioned a
 report link or publication. If the user declines, deliver the local report and do not upload;
 if unanswered, keep the local report available and publication pending. Once the user answers

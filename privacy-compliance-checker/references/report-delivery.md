@@ -31,7 +31,7 @@ logo, pills and footer, and pass `--brand path/to/brand.json`.
 
 Always render and check the local report first. Show the user its path and a short outcome,
 then ask: "Would you like me to publish this report as a shareable link on Katla? It will be
-available for fourteen days." Ask this final publication question even if the initial audit request
+available for seven days." Ask this final publication question even if the initial audit request
 mentioned a shareable link or publication. Upload only after an explicit affirmative answer for
 this completed report. A declined offer means local delivery only; no answer leaves publication
 pending and does not authorize an upload. Do not repeat the question once it has been answered
@@ -68,7 +68,7 @@ report itself from the data. That is not a detail, it is the reason the flow is 
 - One source of truth. The link and any PDF printed from it come from the same `findings.json`,
   so they cannot disagree.
 
-Reports are kept for **fourteen days** and then deleted. Tell the user that when you hand over the
+Reports are kept for **seven days** and then deleted. Tell the user that when you hand over the
 link — it is a shared document naming a real company's compliance failures, and the expiry is
 part of what makes that reasonable. The page carries its own A4 print stylesheet, so "download
 as PDF" is the browser's print dialog and matches the local file exactly.
@@ -94,7 +94,7 @@ transcript, and tell them it is worth keeping if they might want the report take
 
 Treat it as a credential, but a small one: it authorises exactly one report, it grants nothing
 beyond revising and retracting that report, it cannot read anything the link does not already
-expose, and it dies with the report in fourteen days. Do not write it to a file in the user's
+expose, and it dies with the report in seven days. Do not write it to a file in the user's
 repository, where it would get committed.
 
 ### Revising a report
@@ -110,7 +110,7 @@ node scripts/revise-report.mjs <uid> findings.json --key <edit key>
 Re-run the audit, write the new `findings.json`, then revise. The link does not change, so
 nobody needs to be told a second URL. The expiry does not move either — retention is a promise
 to the company that was audited, not to whoever published the report, and a report that could
-be kept alive by editing it would make the fourteen days meaningless.
+be kept alive by editing it would make the seven days meaningless.
 
 Prefer revising over republishing whenever the user has already been given a link.
 
@@ -122,7 +122,7 @@ node scripts/retract-report.mjs <uid> --key <edit key>
 
 For a report published in error, superseded, or that the user simply no longer wants standing.
 The row goes with it. Offer this whenever a user expresses second thoughts about a report being
-live — it names a real company's compliance failures, and waiting out the fortnight is not the
+live — it names a real company's compliance failures, and waiting out the week is not the
 only option available to them.
 
 Both scripts accept the full URL in place of the uid, and read `KATLA_REPORT_KEY` if you would

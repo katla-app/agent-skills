@@ -12,7 +12,7 @@
  *
  * The expiry does not move. Retention is a promise to the company that was audited, not to
  * whoever published the report, and a report that could be kept alive by editing it would make
- * the fourteen days meaningless.
+ * the seven days meaningless.
  *
  * Zero dependencies. Node 18+.
  */
