@@ -30,7 +30,7 @@ Server Components passed as children remain server-rendered despite the `use cli
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `siteId` | `string` | -- | Your site's UUID (required) |
-| `baseUrl` | `string` | `https://dist.katla.app` | Override the CDN base URL |
+| `baseUrl` | `string` | `https://cdn.katla.app` | Override the CDN base URL |
 | `locale` | `PolicyLocale` | -- | Default locale for policy documents |
 | `debug` | `boolean` | `false` | Enable console logging |
 | `initialCookies` | `CookieData \| null` | -- | Pre-fetched cookie data |

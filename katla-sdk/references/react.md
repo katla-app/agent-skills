@@ -23,7 +23,7 @@ function App() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `siteId` | `string` | -- | Your site's UUID (required) |
-| `baseUrl` | `string` | `https://dist.katla.app` | Override the CDN base URL |
+| `baseUrl` | `string` | `https://cdn.katla.app` | Override the CDN base URL |
 | `locale` | `PolicyLocale` | -- | Default locale for policy documents (e.g., `en-GB`, `de-DE`, `sv-SE`) |
 | `debug` | `boolean` | `false` | Enable console logging |
 | `initialCookies` | `CookieData \| null` | -- | Pre-fetched cookie data (skips runtime fetch) |
@@ -239,7 +239,7 @@ function CookieList() {
   error={error}
   maxPerCategory={10}
   renderCookie={(cookie) => (
-    <div><code>{cookie.name}</code> — {cookie.domain}</div>
+    <div><code>{cookie.name}</code> - {cookie.domain}</div>
   )}
 />
 ```

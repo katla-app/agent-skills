@@ -4,9 +4,10 @@ description: >-
   Implements cookie consent and privacy compliance using the Katla SDK (@katla.app/sdk).
   Use when the user mentions "Katla," "cookie consent," "cookie banner," "consent management,"
   "KatlaProvider," "useKatlaConsent," "useKatlaCookies," "CookieBanner," "CookieCatalog,"
-  "cookie guard," "consent mode," "katla widget," or wants to add GDPR/CCPA cookie consent
-  to a React, Next.js, Vite, or vanilla JavaScript project. Also use when integrating
-  Google Consent Mode with cookie consent.
+  "cookie guard," "consent mode," or wants a custom, code-level GDPR/CCPA cookie consent
+  implementation in a React, Next.js, Vite, or vanilla JavaScript project. Also use when
+  integrating Google Consent Mode with cookie consent. For Katla's hosted banner (one
+  script tag, no custom UI), use the katla-widget skill instead.
 homepage: https://docs.katla.app/sdk
 ---
 
@@ -16,9 +17,15 @@ The Katla SDK (`@katla.app/sdk`) provides cookie consent management, cookie cata
 
 ## Prerequisites
 
-- A Katla account at [katla.app](https://katla.app) with a verified site
+- A Katla account at [katla.app](https://katla.app) with the site added (there is no DNS record or meta tag to publish first)
 - At least one completed cookie scan
 - Node.js 18+
+
+## Getting the site ID
+
+Every example below needs the site's UUID as `siteId`. When the Katla MCP server is
+connected, `katla_list_sites` or `katla_get_install_snippet` returns it; otherwise it is
+shown in the Katla dashboard. Never invent one.
 
 ## Installation
 
@@ -119,11 +126,14 @@ Add `katla pull` to prebuild: `"prebuild": "katla pull your-site-id"`.
 
 Read `references/vanilla.md` for the full JavaScript API and widget usage.
 
-**Widget (simplest):**
+**Widget (simplest):** if the user wants Katla's hosted banner rather than a custom
+implementation, use the `katla-widget` skill instead. It is one tag in `<head>`:
 
 ```html
-<script src="https://dist.katla.app/{siteId}.js"></script>
+<script src="https://cdn.katla.app/{siteId}.js" defer></script>
 ```
+
+Use either the widget or the SDK provider on a page, not both.
 
 **SDK client:**
 
@@ -213,7 +223,7 @@ export default { siteId: 'your-site-id', dir: '.katla' };
 
 ```html
 <div id="katla-policy"></div>
-<script src="https://dist.katla.app/{siteId}/policy.js"></script>
+<script src="https://cdn.katla.app/{siteId}/policy.js"></script>
 ```
 
 Supports `?format=full|cookie|table` and `?locale=de-DE`. Customizable via `window.KatlaPolicy.classes` or `window.KatlaPolicy.styles`.

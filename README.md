@@ -6,7 +6,8 @@ Agent skills for [Claude Code](https://claude.ai/code) and other AI coding agent
 
 | Skill | Description |
 |-------|-------------|
-| `katla-sdk` | Implement cookie consent and privacy compliance using the [Katla SDK](https://docs.katla.app/sdk) for React, Next.js, Vite, and vanilla JS |
+| `katla-widget` | Install Katla's hosted [consent widget](https://docs.katla.app/widget): one script tag, a cookie settings link and the policy embed. The default way to add Katla to a site |
+| `katla-sdk` | Custom cookie consent with the [Katla SDK](https://docs.katla.app/sdk) for React, Next.js, Vite, and vanilla JS |
 | `privacy-compliance-checker` | Browser-based privacy compliance auditing for any webpage — GDPR, CCPA/CPRA, and nine APAC regimes: Japan (APPI), Thailand (PDPA), Indonesia (PDP Law), Singapore (PDPA), Taiwan (PDPA), Malaysia (PDPA), Hong Kong (PDPO), Philippines (DPA 2012), India (DPDP) |
 
 ### Compliance reports
@@ -46,6 +47,7 @@ the tokens, and pass `--brand path/to/brand.json`. Schema:
 npx skills add katla-app/agent-skills
 
 # Install a specific skill
+npx skills add katla-app/agent-skills --skill katla-widget
 npx skills add katla-app/agent-skills --skill katla-sdk
 npx skills add katla-app/agent-skills --skill privacy-compliance-checker
 

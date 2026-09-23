@@ -5,7 +5,7 @@
 Add the script tag to your HTML:
 
 ```html
-<script src="https://dist.katla.app/{siteId}.js"></script>
+<script src="https://cdn.katla.app/{siteId}.js"></script>
 ```
 
 The widget automatically:
@@ -24,7 +24,7 @@ The widget automatically:
 | `debug` | `true` | Enable console logging |
 
 ```html
-<script src="https://dist.katla.app/{siteId}.js?theme=dark&debug=true"></script>
+<script src="https://cdn.katla.app/{siteId}.js?theme=dark&debug=true"></script>
 ```
 
 ### Widget Customization (via Katla site settings)
@@ -47,7 +47,7 @@ import { createKatlaClient } from '@katla.app/sdk';
 
 const client = createKatlaClient({
   siteId: 'your-site-id',
-  // baseUrl: 'https://dist.katla.app', // optional CDN override
+  // baseUrl: 'https://cdn.katla.app', // optional CDN override
 });
 ```
 
@@ -125,15 +125,15 @@ const cleanup = setupGoogleConsentMode();
 
 | Format | Endpoint | Purpose |
 |--------|----------|---------|
-| HTML | `https://dist.katla.app/{siteId}.html` | Standalone cookie settings iframe |
-| JSON | `https://dist.katla.app/{siteId}.json` | Raw cookie data for custom integrations |
-| Manifest | `https://dist.katla.app/{siteId}/manifest.json` | Resource discovery |
+| HTML | `https://cdn.katla.app/{siteId}.html` | Standalone cookie settings iframe |
+| JSON | `https://cdn.katla.app/{siteId}.json` | Raw cookie data for custom integrations |
+| Manifest | `https://cdn.katla.app/{siteId}/manifest.json` | Resource discovery |
 
 ## Policy Embed
 
 ```html
 <div id="katla-policy"></div>
-<script src="https://dist.katla.app/{siteId}/policy.js"></script>
+<script src="https://cdn.katla.app/{siteId}/policy.js"></script>
 ```
 
 ### Format options via query parameter
@@ -163,7 +163,7 @@ Auto-detects browser language. Override: `policy.js?locale=de-DE`
   };
 </script>
 <div id="katla-policy"></div>
-<script src="https://dist.katla.app/{siteId}/policy.js"></script>
+<script src="https://cdn.katla.app/{siteId}/policy.js"></script>
 ```
 
 ### Custom styling with inline styles
@@ -196,7 +196,7 @@ console.log(window.KatlaPolicy.getLocale());
 
 ### Direct URL access
 
-- HTML: `https://dist.katla.app/{siteId}/policy.html`
-- JSON: `https://dist.katla.app/{siteId}/policy.json`
-- Markdown: `https://dist.katla.app/{siteId}/policy.md`
-- JavaScript: `https://dist.katla.app/{siteId}/policy.js`
+- HTML: `https://cdn.katla.app/{siteId}/policy.html`
+- JSON: `https://cdn.katla.app/{siteId}/policy.json`
+- Markdown: `https://cdn.katla.app/{siteId}/policy.md`
+- JavaScript: `https://cdn.katla.app/{siteId}/policy.js`

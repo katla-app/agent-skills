@@ -29,7 +29,7 @@ Quick overview of all domains with verification status, last scan date, and scan
 |---------|-------------|
 | `katla domains ls` | List all domains |
 | `katla domains add example.com` | Add a domain (optional `--method meta_tag\|dns`) |
-| `katla domains verify example.com` | Verify ownership (polls up to 60 seconds) |
+| `katla domains verify example.com` | Queue an ownership check. Verification is switched off, so this is rarely needed |
 | `katla domains rm example.com` | Remove a domain (with confirmation) |
 | `katla domains scan example.com` | Trigger a cookie scan (polls up to 6 minutes) |
 
@@ -69,16 +69,5 @@ Fetches cookies, policies, guard script, and manifest to `.katla/` directory.
 
 ## Domain Verification
 
-### Meta Tag Method
-
-```html
-<meta name="katla-verification" content="your-token-here" />
-```
-
-### DNS Method
-
-Add a TXT record:
-- Name: `_katla-verification`
-- Value: `your-token-here`
-
-DNS changes can take a few minutes to propagate.
+Verification is switched off: a domain can be scanned as soon as it is added, and there is no
+meta tag or DNS record to put in place first.
