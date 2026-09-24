@@ -29,11 +29,23 @@ If unsure, install the widget. Use one or the other on a page, never both.
 
 ## Prerequisites
 
-1. The site is added to Katla. With the Katla MCP server: `katla_list_sites`, or
-   `katla_add_site` if it is missing. There is no DNS record or meta tag to publish first.
-2. At least one completed scan, so the banner knows which cookies exist: `katla_scan_site`,
-   then poll `katla_get_scan_status`. Scans crawl the published site, so scan the live
-   domain rather than a local or preview URL.
+1. **Choose the site with the user.** The tag is tied to one Katla site, and installing
+   another site's tag records every visitor's consent against the wrong domain. With the
+   Katla MCP server, call `katla_list_sites`, then:
+   - If the user named a domain, or the project's published domain is known (a Lovable
+     app's custom domain or `*.lovable.app` address, say), and it is in the list, confirm
+     that site with the user before using it.
+   - Otherwise show the user the domains in the account and ask which one this project is,
+     or whether to add its domain as a new site.
+   - Never pick a site yourself, and never take the first one in the list - not even when
+     the account has only one site, since it may belong to a different project.
+   - To add one, ask for the published domain if you do not know it, then `katla_add_site`.
+     There is no DNS record or meta tag to publish first.
+2. At least one completed scan, so the banner knows which cookies exist. A new site has
+   none, so start one straight away; for an existing site, check with `katla_get_site` and
+   offer to scan if it has never completed one. `katla_scan_site`, then poll
+   `katla_get_scan_status`. Scans crawl the published site, so scan the live domain rather
+   than a local or preview URL.
 
 ## Step 1: Get the tag
 

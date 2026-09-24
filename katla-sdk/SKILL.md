@@ -23,9 +23,21 @@ The Katla SDK (`@katla.app/sdk`) provides cookie consent management, cookie cata
 
 ## Getting the site ID
 
-Every example below needs the site's UUID as `siteId`. When the Katla MCP server is
-connected, `katla_list_sites` or `katla_get_install_snippet` returns it; otherwise it is
-shown in the Katla dashboard. Never invent one.
+Every example below needs the site's UUID as `siteId`, and it must be the site for this
+project: another site's ID records every visitor's consent against the wrong domain.
+
+When the Katla MCP server is connected, choose the site with the user first:
+
+- Call `katla_list_sites`. If the user named a domain, or the project's published domain
+  is known, and it is in the list, confirm that site with the user.
+- Otherwise show the user the domains in the account and ask which one this project is, or
+  whether to add its domain as a new site with `katla_add_site` and then scan it with
+  `katla_scan_site`.
+- Never pick a site yourself, and never take the first one in the list - not even when the
+  account has only one site, since it may belong to a different project.
+
+Then `katla_get_install_snippet` with that domain returns the `siteId`. Without the MCP
+server, it is shown in the Katla dashboard. Never invent one.
 
 ## Installation
 
