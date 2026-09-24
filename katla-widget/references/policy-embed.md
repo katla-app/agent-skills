@@ -58,7 +58,6 @@ You can apply CSS classes and inline styles to every generated HTML element by s
 | `td` | `<td>` data cells |
 | `ul` | `<ul>` lists |
 | `li` | `<li>` list items |
-| `a` | `<a>` links |
 | `strong` | `<strong>` bold text |
 | `em` | `<em>` italic text |
 

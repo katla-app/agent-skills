@@ -28,13 +28,26 @@ project: another site's ID records every visitor's consent against the wrong dom
 
 When the Katla MCP server is connected, choose the site with the user first:
 
-- Call `katla_list_sites`. If the user named a domain, or the project's published domain
-  is known, and it is in the list, confirm that site with the user.
-- Otherwise show the user the domains in the account and ask which one this project is, or
-  whether to add its domain as a new site with `katla_add_site` and then scan it with
-  `katla_scan_site`.
+- Find the project's published domain: the address visitors use, not a local or preview
+  URL. In Lovable that is the app's custom domain or its `<name>.lovable.app` address,
+  never `id-preview--*.lovable.app` or `*.lovableproject.com`. If you cannot find it, ask.
+- Call `katla_list_sites`. If the published domain (or one the user named) is in the list,
+  confirm that site with the user. If it is not, suggest adding the published domain as a
+  new site with `katla_add_site` and scanning it with `katla_scan_site`, and offer the
+  existing sites as the alternative.
 - Never pick a site yourself, and never take the first one in the list - not even when the
   account has only one site, since it may belong to a different project.
+- If the chosen site is not the published domain (ignoring `www.`), tell the user before
+  writing code: the cookie catalogue and policy come from scanning that other site, so they
+  may not match what this app sets. Ask whether to add and scan the published domain
+  instead, or keep the chosen site because it is this app under another address.
+
+Then make sure the site has a full cookie scan, since the cookie catalogue and policy come
+from it. Scans crawl the published site, so ask the user whether to scan now (the site is
+published with its current code) or later (not published yet). For later, tell them what
+to write in this chat once it is live, for example "Scan my site {domain} with Katla and
+tell me which cookies it found". Never start a scan without asking: scans count against
+their plan.
 
 Then `katla_get_install_snippet` with that domain returns the `siteId`. Without the MCP
 server, it is shown in the Katla dashboard. Never invent one.
