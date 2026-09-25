@@ -22,7 +22,7 @@ Google Consent Mode setting all live in the Katla dashboard, not in the site's c
 | The user wants | Use |
 |---|---|
 | A working, compliant banner with no UI work | This skill (the widget) |
-| The banner restyled (colors, layout, position, radius, theme) | This skill - it is dashboard configuration, not code |
+| The banner restyled (colors, layout, position, radius, theme) | This skill - it is dashboard configuration, not code. Colors are the site's branding, shared with the accessibility widget |
 | A banner built from their own components, or consent as React state | The `katla-sdk` skill |
 
 If unsure, install the widget. Use one or the other on a page, never both.
@@ -232,7 +232,19 @@ The banner's look is configuration, not code: never restyle it with CSS override
 site. Instead read the site's design and set the banner's colours, corner radius and theme
 with `katla_update_site_settings`, so it looks like part of the site.
 
-1. **Find the design tokens**, in this order, and stop at the first that answers:
+The colours are the site's **branding**, not the banner's alone: Katla's accessibility
+widget wears the same ones, so saving them restyles both. Say so when you show the user the
+values.
+
+1. **Check what Katla already has.** `katla_get_site` returns `branding` (the saved colours,
+   or null if none have been set) and, after a scan, `brandingSuggestion`: a light and dark
+   palette read off the published homepage and already adjusted to the contrast rules in
+   step 6. If `branding` is null and there is a suggestion, offer it as the starting point
+   and compare it with what you find in the code in step 2 - the code wins where the two
+   disagree, since the suggestion comes from the live site and may predate the changes being
+   made now. If `branding` is already set, the user chose those colours: change them only if
+   they ask.
+2. **Find the design tokens**, in this order, and stop at the first that answers:
    - CSS custom properties in the global stylesheet (`index.css`, `globals.css`,
      `app.css`): shadcn/ui and Lovable projects keep `--primary`, `--background`,
      `--foreground`, `--muted-foreground`, `--radius` there, in HSL or OKLCH, with a
@@ -241,31 +253,36 @@ with `katla_update_site_settings`, so it looks like part of the site.
      `@theme` in the CSS for Tailwind 4).
    - The classes on the site's main call-to-action button, cards and body text.
    - The published site's CSS, if the code is not available.
-2. **Map them onto the banner's six colours**, for light and, if the site has a dark mode,
+3. **Map them onto the six brand colours**, for light and, if the site has a dark mode,
    dark:
 
-   | Banner colour | Take it from |
-   |---|---|
-   | `primary` | The main call-to-action or brand colour (`--primary`) |
-   | `secondary` | The site's text colour or a neutral dark (light) / light (dark) |
-   | `accent` | Same as `primary`, unless the site has a distinct accent |
-   | `background` | The card or popover surface (`--card`, `--popover`, or `--background`) |
-   | `foreground` | Body text (`--foreground`) |
-   | `muted` | Secondary text (`--muted-foreground`) |
+   | Colour | Take it from | Banner | Accessibility widget |
+   |---|---|---|---|
+   | `primary` | The main call-to-action or brand colour (`--primary`) | Accept all, cookie icon | The button |
+   | `secondary` | The site's text colour or a neutral dark (light) / light (dark) | Reject | - |
+   | `accent` | Same as `primary`, unless the site has a distinct accent | "Always on" badge | - |
+   | `background` | The card or popover surface (`--card`, `--popover`, or `--background`) | The card | The panel |
+   | `foreground` | Body text (`--foreground`) | Text | Panel text |
+   | `muted` | Secondary text (`--muted-foreground`) | Descriptions, links | - |
 
    Convert every value to 6-digit hex (`#rrggbb`); the tool rejects anything else. Resolve
-   HSL/OKLCH triplets and `var()` references to their final colour.
-3. **Radius:** the banner's corner is the dial x 2 px. Take the site's card or dialog radius
+   HSL/OKLCH triplets and `var()` references to their final colour. The accessibility widget
+   uses the light colours unless the banner theme is `dark`.
+4. **Radius:** the banner's corner is the dial x 2 px. Take the site's card or dialog radius
    in px and halve it (`--radius: 0.5rem` = 8px, so `radius: 4`; square corners, `0`;
    anything above 20px, `10`).
-4. **Theme:** `system` if the site switches with the OS or has a `.dark` theme, otherwise
+5. **Theme:** `system` if the site switches with the OS or has a `.dark` theme, otherwise
    `light` (or `dark` for a dark-only site). Only fill `colors.dark` when the site has one.
-5. **Check contrast:** `foreground` on `background` should reach 4.5:1 and `primary` on
+6. **Check contrast:** `foreground` on `background` should reach 4.5:1 and `primary` on
    `background` 3:1. If the brand colour is too pale, take a darker shade from the same
    scale rather than a different hue.
-6. **Show the user** the values and where each came from, and save only once they agree.
+7. **Show the user** the values and where each came from, and save only once they agree.
    Layout, position and blocking are choices, not something to infer: keep the defaults
    unless the user asks.
+
+Without the MCP server, the colours are on the site's **Branding** page in the Katla
+dashboard, which also offers the scan's suggestion; radius, theme and layout are on the
+**Banner** page.
 
 With the SDK the banner is the site's own components, so none of this applies there.
 

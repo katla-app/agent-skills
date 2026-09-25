@@ -60,7 +60,7 @@ So, whatever you write:
 ## Step 1: Get the tag
 
 Call `katla_get_accessibility_widget_snippet` with the site and any of `position`
-(`bottom-right` default, or `bottom-left`), `accent`, `statementUrl` and `feedbackUrl`.
+(`bottom-right` default, or `bottom-left`), `statementUrl` and `feedbackUrl`.
 It returns the tag:
 
 ```html
@@ -72,9 +72,20 @@ Use it exactly as returned. Never guess or invent a site ID.
 Without the MCP server, the tag is in the Katla dashboard: open the site's **Accessibility**
 page and choose **Install widget**, which also shows a live preview.
 
-**Accent colour:** the launcher is a filled circle with a white icon, so the accent needs
-at least 4.5:1 contrast against white. Taking the site's primary brand colour is fine if it
-passes; if it is too pale, use a darker shade of the same hue, or leave the default violet.
+**Colours come from the site's branding**, not the tag. The widget fetches them from Katla
+on load: the brand's primary colour for the button, its background and text colour for the
+panel. They are the same colours as the consent banner, set with `katla_update_site_settings`
+`colors` or on the site's **Branding** page, and a change there reaches the widget without
+touching the tag. With no branding set, the widget uses Katla violet.
+
+So to make the widget match the site, set the branding - follow "Match the banner to the
+site" in the katla-widget skill, which starts from the palette Katla read off the homepage
+(`brandingSuggestion` in `katla_get_site`). Do not pass `accent` to the snippet tool or add
+`data-accent` to the tag unless the user wants this widget to differ from the brand: a
+colour on the tag overrides the branding and stops following it.
+
+The widget picks white or dark text for its button to suit the colour, so a pale brand
+primary stays readable.
 
 ## Step 2: Put it on every page
 
@@ -136,14 +147,15 @@ the corner. Declare `window.KatlaA11y` in a script *above* the tag:
 ```html
 <script>
   window.KatlaA11y = {
-    theme: { accent: '#1d4ed8', panel: '#ffffff', text: '#16161a' },
     labels: { title: 'Tillgänglighet', open: 'Tillgänglighetsinställningar', reset: 'Återställ allt' },
   };
 </script>
 <script src="https://cdn.katla.app/a11y.js" data-site="{siteId}" defer></script>
 ```
 
-Anything set there wins over the tag's attributes. Only the labels you pass change; the
+Anything set there wins over the tag's attributes. It can also take `theme`
+(`{ accent, panel, text }`), which overrides the site's branding on this page only - leave
+it out unless the user asks for the widget to look different from the banner. Only the labels you pass change; the
 rest keep their defaults. Every key, the shortcut and skip-link options, and the colour
 rules are in `references/configuration.md`.
 
@@ -174,7 +186,8 @@ Tell the user about these rather than configuring them:
 - Describing the widget as making the site accessible or compliant.
 - Bundling the script, loading it as a module, or injecting it from JavaScript that strips
   the `data-*` attributes: it then boots with defaults and no site ID.
-- A pale brand colour as `accent`, leaving a white icon nobody can see.
+- Hard-coding the brand colour as `data-accent` or `theme`: it then stops following the
+  site's branding. Set the branding instead.
 - A `Content-Security-Policy` that blocks it. Allow `https://cdn.katla.app` in both
   `script-src` and `connect-src` (the widget asks the CDN whether to show branding).
 - Putting the tag only on the home page. Visitors hit barriers on every page.

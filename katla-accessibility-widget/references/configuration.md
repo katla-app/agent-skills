@@ -7,6 +7,9 @@ configuration comes from the page that loads it, through two channels:
 - **`window.KatlaA11y`**, declared in a script *above* the tag - the full surface, including
   panel colours and labels.
 
+Colours have a third source underneath both: the site's branding in Katla, which the widget
+fetches with `data-site`. The tag and the global only override it.
+
 Where both set the same thing, `window.KatlaA11y` wins. Invalid values are ignored and the
 default is used instead, so a typo never breaks the widget - but it also never warns you.
 
@@ -16,9 +19,9 @@ default is used instead, so a typo never breaks the widget - but it also never w
 |---|---|---|---|
 | `data-site` | `site` | The Katla site ID | none (branding shown) |
 | `data-position` | `position` | `bottom-right`, `bottom-left` | `bottom-right` |
-| `data-accent` | `theme.accent` | Hex, `#rgb` or `#rrggbb` | `#5B21B6` |
-| - | `theme.panel` | Hex: panel background | `#ffffff` |
-| - | `theme.text` | Hex: panel text | `#16161a` |
+| `data-accent` | `theme.accent` | Hex, `#rgb` or `#rrggbb` | Brand primary, else `#5B21B6` |
+| - | `theme.panel` | Hex: panel background | Brand background, else `#ffffff` |
+| - | `theme.text` | Hex: panel text | Brand text colour, else `#16161a` |
 | `data-statement` | `statementUrl` | `https://`, `http://`, `mailto:` or a path | none (link hidden) |
 | `data-feedback` | `feedbackUrl` | `https://`, `http://`, `mailto:` or a path | none (link hidden) |
 | `data-shortcut` | `shortcut` | e.g. `alt+shift+a`, `ctrl+alt+k`; `off` disables | `alt+shift+a` |
@@ -29,8 +32,11 @@ Notes:
 
 - **Colours are hex only.** Named colours, `rgb()`, `hsl()` and `var()` are ignored. Resolve
   a design token to its final hex value first.
-- **Contrast.** The launcher is `accent` with a white icon: keep it at 4.5:1 or more against
-  white. `text` on `panel` should also reach 4.5:1.
+- **Branding first.** Without a colour on the tag or the global, the widget uses the site's
+  branding (the light colours, or the dark ones if the banner theme is `dark`). Overriding
+  it here is per page and stops following later branding changes.
+- **Contrast.** The launcher icon is white, or dark when `accent` is too pale for white.
+  `text` on `panel` should reach 4.5:1.
 - **Links** with any other scheme (including `javascript:`) are dropped.
 - **Shortcut** is modifiers joined with `+` and a single character last. Modifiers: `alt`
   (or `option`), `ctrl` (or `control`), `shift`, `meta` (or `cmd`). Avoid `alt+1`..`alt+9`:
