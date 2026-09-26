@@ -76,7 +76,9 @@ page and choose **Install widget**, which also shows a live preview.
 on load: the brand's primary colour for the button, its background and text colour for the
 panel. They are the same colours as the consent banner, set with `katla_update_site_settings`
 `colors` or on the site's **Branding** page, and a change there reaches the widget without
-touching the tag. With no branding set, the widget uses Katla violet.
+touching the tag. Both the light and dark brand colours are used: the widget follows the
+banner's theme, so with the banner on System the panel matches each visitor's light or
+dark setting. With no branding set, the widget uses Katla violet.
 
 So to make the widget match the site, set the branding - follow "Match the banner to the
 site" in the katla-widget skill, which starts from the palette Katla read off the homepage
@@ -153,8 +155,9 @@ the corner. Declare `window.KatlaA11y` in a script *above* the tag:
 <script src="https://cdn.katla.app/a11y.js" data-site="{siteId}" defer></script>
 ```
 
-Anything set there wins over the tag's attributes. It can also take `theme`
-(`{ accent, panel, text }`), which overrides the site's branding on this page only - leave
+Anything set there wins over the tag's attributes. It can also take `theme` and
+`darkTheme` (`{ accent, panel, text }`) and `mode` (`system`, `light`, `dark`), which
+override the site's branding on this page only - leave
 it out unless the user asks for the widget to look different from the banner. Only the labels you pass change; the
 rest keep their defaults. Every key, the shortcut and skip-link options, and the colour
 rules are in `references/configuration.md`.

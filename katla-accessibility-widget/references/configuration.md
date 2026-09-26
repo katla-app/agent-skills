@@ -19,9 +19,11 @@ default is used instead, so a typo never breaks the widget - but it also never w
 |---|---|---|---|
 | `data-site` | `site` | The Katla site ID | none (branding shown) |
 | `data-position` | `position` | `bottom-right`, `bottom-left` | `bottom-right` |
-| `data-accent` | `theme.accent` | Hex, `#rgb` or `#rrggbb` | Brand primary, else `#5B21B6` |
+| `data-accent` | `theme.accent` | Hex, `#rgb` or `#rrggbb` (the tag's also sets the dark accent) | Brand primary, else `#5B21B6` |
 | - | `theme.panel` | Hex: panel background | Brand background, else `#ffffff` |
 | - | `theme.text` | Hex: panel text | Brand text colour, else `#16161a` |
+| - | `darkTheme` | `{ accent, panel, text }`, hex, for the dark scheme | Brand dark colours, else `#9a6ae8` / `#151419` / `#f4f3f6` |
+| `data-mode` | `mode` | `system`, `light`, `dark` | The banner's theme, else `system` |
 | `data-statement` | `statementUrl` | `https://`, `http://`, `mailto:` or a path | none (link hidden) |
 | `data-feedback` | `feedbackUrl` | `https://`, `http://`, `mailto:` or a path | none (link hidden) |
 | `data-shortcut` | `shortcut` | e.g. `alt+shift+a`, `ctrl+alt+k`; `off` disables | `alt+shift+a` |
@@ -33,8 +35,13 @@ Notes:
 - **Colours are hex only.** Named colours, `rgb()`, `hsl()` and `var()` are ignored. Resolve
   a design token to its final hex value first.
 - **Branding first.** Without a colour on the tag or the global, the widget uses the site's
-  branding (the light colours, or the dark ones if the banner theme is `dark`). Overriding
-  it here is per page and stops following later branding changes.
+  branding, both its light and dark colours. Overriding it here is per page and stops
+  following later branding changes.
+- **Light and dark.** The mode comes from the banner's theme: `system` follows the
+  visitor's `prefers-color-scheme` (and a `dark` or `light` class on an ancestor, for sites
+  with their own toggle), `light` and `dark` pin it. Setting `theme.panel` or `theme.text`
+  without a `darkTheme` pins the widget to light, so those colours are what visitors see;
+  set `mode` to override that.
 - **Contrast.** The launcher icon is white, or dark when `accent` is too pale for white.
   `text` on `panel` should reach 4.5:1.
 - **Links** with any other scheme (including `javascript:`) are dropped.
