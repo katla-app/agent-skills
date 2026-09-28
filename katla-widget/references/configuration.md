@@ -176,6 +176,36 @@ whenever you re-copy the snippet. If neither fits your policy, link the loader i
 
 > Functional cookies are always allowed and cannot be rejected.
 
+## Blocking scripts and pixels
+
+The cookie guard stops cookies from being **written**. It does not stop a tracker from loading, and a pixel such as the Meta Pixel reports the visit whether or not it can set a cookie. To hold a tag back until the visitor allows its category, mark it up:
+
+```html
+<!-- An external script -->
+<script type="text/plain" data-katla-category="marketing" data-katla-src="https://connect.facebook.net/en_US/fbevents.js"></script>
+
+<!-- An inline script -->
+<script type="text/plain" data-katla-category="marketing">
+  fbq('init', 'YOUR_PIXEL_ID');
+  fbq('track', 'PageView');
+</script>
+
+<!-- A module script: put its real type in data-katla-type -->
+<script type="text/plain" data-katla-type="module" data-katla-category="analytics" data-katla-src="/analytics.js"></script>
+
+<!-- An iframe or image pixel -->
+<iframe data-katla-category="marketing" data-katla-src="https://www.youtube.com/embed/VIDEO_ID"></iframe>
+<img data-katla-category="marketing" data-katla-src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView" alt="">
+```
+
+`data-katla-category` is one of `analytics`, `marketing`, `personalization` or `security`. When the page loads with that category already allowed, or as soon as the visitor allows it, Katla runs each held-back script in document order. It waits for an external script to load before running the next tag, so a vendor's inline setup can call the library loaded above it.
+
+A tag that has run stays running. If the visitor later narrows their consent, the cookie guard enforces the new choice straight away and the tags stay held back from the next page load.
+
+If your site adds held-back tags after the page has loaded, for example on a client-side route change, call `KatlaConsent.activateBlocked()` to pick them up.
+
+> On WordPress, the [Katla plugin](https://docs.katla.app/wordpress#blocking-scripts) writes this markup for you and runs it itself.
+
 ## Customization
 
 You can customize the widget appearance in your site settings. Available options:

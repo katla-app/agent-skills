@@ -145,5 +145,6 @@ KatlaConsent.isGPCEnabled()   // true if browser has GPC enabled
 | `getAllowedCategories()` | `string[]` | Currently allowed categories |
 | `isCategoryAllowed(category)` | `boolean` | Check if a specific category is allowed |
 | `isCookieAllowed(name)` | `boolean` | Check if a specific cookie is allowed |
+| `activateBlocked()` | `void` | Run held-back tags whose category is now allowed. Only needed for tags added after page load. See [Blocking scripts and pixels](https://docs.katla.app/widget#blocking-scripts-and-pixels). Added in guard script version `3` |
 | `isGPCEnabled()` | `boolean` | Whether browser GPC signal is active |
 | `getRegulation()` | `string` | Active regulation (`'gdpr'` or `'ccpa'`) |
