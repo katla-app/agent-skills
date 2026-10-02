@@ -1,0 +1,44 @@
+{
+  "name": "katla",
+  "version": "1.0.1",
+  "description": "Cookie consent and compliance from your coding agent. Connects the Katla MCP server and adds skills for installing the consent banner, the SDK, the policy page and the accessibility widget.",
+  "author": {
+    "name": "Katla",
+    "url": "https://katla.app"
+  },
+  "homepage": "https://docs.katla.app/mcp-server",
+  "repository": "https://github.com/katla-app/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "katla",
+    "cookie-consent",
+    "cookie-banner",
+    "gdpr",
+    "ccpa",
+    "consent-mode",
+    "privacy",
+    "accessibility"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Katla",
+    "shortDescription": "Cookie consent, scans and policies for your sites",
+    "longDescription": "Manage cookie consent from Codex. Scan a site for cookies, read consent rates, fix classifications, and install the Katla consent banner, SDK, policy page or accessibility widget in your code. Signs in with your own Katla account over OAuth.",
+    "developerName": "Katla",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://katla.app",
+    "privacyPolicyURL": "https://katla.app/privacy-policy",
+    "termsOfServiceURL": "https://katla.app/terms",
+    "defaultPrompt": [
+      "Install the Katla cookie banner on this site",
+      "Which marketing cookies does my site set?",
+      "Put our cookie policy on the privacy page"
+    ],
+    "brandColor": "#5B21B6",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg",
+    "screenshots": []
+  }
+}

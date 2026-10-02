@@ -1,0 +1,20 @@
+{
+  "name": "katla",
+  "interface": {
+    "displayName": "Katla"
+  },
+  "plugins": [
+    {
+      "name": "katla",
+      "source": {
+        "source": "local",
+        "path": "./plugins/katla"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

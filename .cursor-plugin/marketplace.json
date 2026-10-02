@@ -1,0 +1,16 @@
+{
+  "name": "katla",
+  "owner": {
+    "name": "Katla"
+  },
+  "metadata": {
+    "description": "Katla for Cursor: the MCP server and the install skills in one plugin"
+  },
+  "plugins": [
+    {
+      "name": "katla",
+      "source": "plugins/katla",
+      "description": "Cookie consent and compliance from your coding agent. Connects the Katla MCP server and adds skills for installing the consent banner, the SDK, the policy page and the accessibility widget."
+    }
+  ]
+}

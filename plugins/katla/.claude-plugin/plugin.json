@@ -1,0 +1,22 @@
+{
+  "name": "katla",
+  "description": "Cookie consent and compliance from your coding agent. Connects the Katla MCP server and adds skills for installing the consent banner, the SDK, the policy page and the accessibility widget.",
+  "author": {
+    "name": "Katla",
+    "url": "https://katla.app"
+  },
+  "homepage": "https://docs.katla.app/mcp-server",
+  "repository": "https://github.com/katla-app/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "katla",
+    "cookie-consent",
+    "cookie-banner",
+    "gdpr",
+    "ccpa",
+    "consent-mode",
+    "privacy",
+    "accessibility",
+    "mcp"
+  ]
+}
