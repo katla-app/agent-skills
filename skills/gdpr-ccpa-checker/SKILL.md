@@ -23,7 +23,7 @@ It supersedes this skill and covers considerably more:
 
 ```bash
 npx skills remove gdpr-ccpa-checker
-npx skills add katla-app/agent-skills --skill privacy-compliance-checker
+npx skills add katla-app/ai --skill privacy-compliance-checker
 ```
 
 Add `-g` to either command if the original was installed globally.

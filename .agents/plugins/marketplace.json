@@ -8,7 +8,7 @@
       "name": "katla",
       "source": {
         "source": "local",
-        "path": "./plugins/katla"
+        "path": "./providers/codex/plugin"
       },
       "policy": {
         "installation": "AVAILABLE",

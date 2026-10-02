@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "katla",
-      "source": "plugins/katla",
+      "source": "providers/cursor/plugin",
       "description": "Cookie consent and compliance from your coding agent. Connects the Katla MCP server and adds skills for installing the consent banner, the SDK, the policy page and the accessibility widget."
     }
   ]
