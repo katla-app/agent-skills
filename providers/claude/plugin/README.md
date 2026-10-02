@@ -31,10 +31,26 @@ window opens where you sign in with your Katla account.
 
 ## What it sends and where
 
-The plugin runs no scripts and has no hooks. The only network destination is the Katla MCP
-server, which receives the requests Claude makes through its tools: the site or URL you ask
-about and the changes you ask for. Tools that change something declare it, so Claude Code can
-ask you first.
+The plugin runs no scripts and has no hooks. Through it, Claude talks to one service, Katla:
+
+- **The Katla MCP server** receives the requests Claude makes through its tools: the site or
+  URL you ask about and the changes you ask for. Tools that change something declare it, so
+  Claude Code can ask you first.
+- **Company details for your policy.** If you ask Claude to set up the privacy policy, it
+  sends the company name and privacy contact email and, if you give them, a DPO email, the
+  company address and its registration number. Katla stores them with your site until you
+  change or remove them.
+- **Consent records** come back without names, emails or IP addresses: an ID, what was
+  accepted or rejected, and when.
+
+Two things the skills can lead Claude to do outside the MCP server:
+
+- **Install Katla's packages from npm**: `@katla.app/sdk` for a custom banner and, only when
+  you ask for it, the `@katla.app/cli` command line tool. The CLI signs in through your
+  browser and talks to Katla's API at `api.katla.app`, the same service as the MCP server.
+- **Add Katla's script to your site.** The code Claude writes loads the banner from
+  `cdn.katla.app`. Once you deploy it, your site sends its visitors' consent choices to
+  Katla. That is the product, and it happens on your website, not on your machine.
 
 ## Try it
 
