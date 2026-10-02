@@ -65,7 +65,7 @@ const client = createKatlaClient({
 // Fetch cookies
 const data = await client.getCookies();
 for (const [category, cookies] of Object.entries(data.cookies)) {
-  console.log(`${category}: ${cookies.length} cookies`);
+  console.log(category, cookies.length);
 }
 
 // Inject guard and listen for consent
