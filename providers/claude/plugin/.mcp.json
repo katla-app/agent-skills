@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "katla": {
+    "Katla": {
       "type": "http",
       "url": "https://api.katla.app/mcp"
     }
